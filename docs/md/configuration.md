@@ -20,7 +20,6 @@ This is the documentation page for `archlint.__main__.py`.
         show_root_heading: true
         show_source: false
 
-
 ## ::: archlint.configuration.ImportConfig
     handler: python
     options:
@@ -29,7 +28,6 @@ This is the documentation page for `archlint.__main__.py`.
         summary: false
         show_root_heading: true
         show_source: false
-
 
 ## ::: archlint.configuration.MethodOrderConfig
     handler: python
@@ -40,7 +38,6 @@ This is the documentation page for `archlint.__main__.py`.
         show_root_heading: true
         show_source: false
 
-
 ## ::: archlint.configuration.TestsConfig
     handler: python
     options:
@@ -49,7 +46,6 @@ This is the documentation page for `archlint.__main__.py`.
         summary: false
         show_root_heading: true
         show_source: false
-
 
 ## ::: archlint.configuration.DocsConfig
     handler: python
@@ -60,7 +56,6 @@ This is the documentation page for `archlint.__main__.py`.
         show_root_heading: true
         show_source: false
 
-
 ## ::: archlint.configuration.get_import_config
     handler: python
     options:
@@ -68,7 +63,6 @@ This is the documentation page for `archlint.__main__.py`.
         summary: false
         show_root_heading: true
         show_source: false
-
 
 ## ::: archlint.configuration.get_method_order_config
     handler: python
@@ -78,7 +72,6 @@ This is the documentation page for `archlint.__main__.py`.
         show_root_heading: true
         show_source: false
 
-
 ## ::: archlint.configuration.get_tests_config
     handler: python
     options:
@@ -87,7 +80,6 @@ This is the documentation page for `archlint.__main__.py`.
         show_root_heading: true
         show_source: false
 
-
 ## ::: archlint.configuration.get_docs_config
     handler: python
     options:
@@ -95,7 +87,6 @@ This is the documentation page for `archlint.__main__.py`.
         summary: false
         show_root_heading: true
         show_source: false
-
 
 ## ::: archlint.configuration.get_config
     handler: python

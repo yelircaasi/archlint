@@ -61,7 +61,7 @@ class Objects:
         _strings: list[str] = self.strings + (self.methodless if include_methodless else [])
         if ignore:
             _strings = list(filter(partial(path_matches_not, path_pattern=ignore), _strings))
-        return list(map(processor, _strings))
+        return list(filter(bool, map(processor, _strings)))
 
 
 def collect_method_info(class_text: str) -> ClassInfoPathless:

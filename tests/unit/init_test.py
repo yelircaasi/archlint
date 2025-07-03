@@ -1,0 +1,13 @@
+# from hello_world import
+
+
+def test_check_method_order(): ...
+
+
+def test_check_docs_structure(): ...
+
+
+def test_check_tests_structure(): ...
+
+
+def test_check_imports(): ...

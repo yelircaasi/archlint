@@ -252,20 +252,30 @@ suppress-none-returning = true
 convention = "google"
 
 [tool.archlint.imports]
-primitive_modules = ["utils"]
-external_allowed_everywhere = []
-internal_allowed_everywhere = []
+primitive_modules = ["regexes"]
+external_allowed_everywhere = [
+    "collections",
+    "os",
+    "pathlib",
+    "re",
+    "sys",
+    "typing",
+]
+internal_allowed_everywhere = ["regexes"]
 
 [tool.archlint.imports.disallowed.internal]
 utils = ["utils"]
 
-[tool.scripts.imports.disallowed.external]
-utils = ["pydantic"]
-
 [tool.archlint.imports.allowed.internal]
+utils = [
+    "regexes"
+]
 
 [tool.archlint.imports.allowed.external]
-utils = ["deal"]
+utils = [
+    "deal",
+    
+]
 
 [tool.archlint.method_order]
 init = 0
@@ -316,6 +326,9 @@ ignore = ":test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
 keep_double_underscore = true
 unit_dir = "tests/unit"
 use_filename_suffix = true
+
+[tool.scripts.imports.disallowed.external]
+utils = ["pydantic"]
 
 [tool.tomlsort]
 all = false

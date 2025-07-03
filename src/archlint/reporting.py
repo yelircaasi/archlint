@@ -1,8 +1,6 @@
 import re
 from pathlib import Path
 
-from archlint.configuration import Configuration
-
 from .utils import (
     Color,
     make_bar,
@@ -26,6 +24,13 @@ def make_methods_report(info: list[tuple[Path, str, list[str], list[str]]]) -> s
         else:
             return f"    {actual_method + '  ':─<30}  {Color.red(expected_method)}"
 
+    if not info:
+        return (
+            "\n"
+            + make_double_bar(" METHOD ORDER ")
+            + "\n\n"
+            + Color.green("    No problems detected.")
+        )
     return (
         "\n" + make_double_bar(" METHOD ORDER ") + "\n" + "\n\n".join(map(make_class_report, info))
     )

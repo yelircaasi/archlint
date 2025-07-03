@@ -27,7 +27,7 @@ includes = ["justfile"]
 
 [formatter.json]
 command = "python"
-options = ["scripts/jsonfmt.py", "4"]
+options = ["scripts/jsonfmt.py"]
 includes = ["*.json"]
 
 [formatter.mdsf]

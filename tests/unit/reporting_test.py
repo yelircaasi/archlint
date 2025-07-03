@@ -1,0 +1,13 @@
+# from archlint import
+
+
+def test_make_methods_report(): ...
+
+
+def test_display_disallowed(): ...
+
+
+def test_make_imports_report(): ...
+
+
+def test_make_discrepancy_report(): ...

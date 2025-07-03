@@ -155,6 +155,7 @@ class Color:
     """
     Simple utility to add ANSI color codes to a string, including the reset at the end.
     """
+
     @staticmethod
     def no_color(s: str) -> str:
         return s

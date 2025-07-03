@@ -88,6 +88,8 @@ def map_to_test(s: str, cfg: Configuration) -> str:
             cfg.tests.file_per_class,
             cfg.tests.file_per_directory,
         )
+    elif ob[0].isupper():
+        return ""
     else:
         result = make_test_function_path(path_, ob, cfg)
     if not cfg.tests.keep_double_underscore:
@@ -115,26 +117,28 @@ def compute_disallowed(
     graph: grimp.ImportGraph,
 ) -> SetDict:
     violations: SetDict = {s: set() for s in set(allowed) | set(disallowed)}
-
-    for module, imports in allowed.items():
-        if module not in graph.modules:
-            print(f"    '{module}' is not a module or is not on the import tree.")
-            continue
-        upstream = graph.find_upstream_modules(module)
-        own_submodules = {module} | filter_with(upstream, module)
-        via_allowed = filter_without(
-            upstream,
-            imports | own_submodules | allowed_everywhere,
-        )
-        violations[module].update(via_allowed)
-
-    for module, imports in disallowed.items():
-        if module not in graph.modules:
-            print(f"    '{module}' is not a module or is not on the import tree.")
-            continue
-        upstream = graph.find_upstream_modules(module)
-        via_disallowed = filter_with(upstream, imports)
-        violations[module].update(via_disallowed)
+    if allowed and disallowed:
+        print("Specifying 'allowed' and 'disallowed' imports does not make sense; using 'allowed' (restrictive).")
+    if allowed:
+        for module, imports in allowed.items():
+            if module not in graph.modules:
+                print(f"    '{module}' is not a module or is not on the import tree.")
+                continue
+            upstream = graph.find_upstream_modules(module)
+            own_submodules = {module} | filter_with(upstream, module)
+            via_allowed = filter_without(
+                upstream,
+                imports | own_submodules | allowed_everywhere,
+            )
+            violations[module].update(via_allowed)
+    else:
+        for module, imports in disallowed.items():
+            if module not in graph.modules:
+                print(f"    '{module}' is not a module or is not on the import tree.")
+                continue
+            upstream = graph.find_upstream_modules(module)
+            via_disallowed = filter_with(upstream, imports)
+            violations[module].update(via_disallowed)
 
     return violations
 
