@@ -1,0 +1,62 @@
+[formatter.nix]
+command = "alejandra"
+options = ["--experimental-config", "codeqa/configs/alejandra.toml"]
+includes = ["*.nix"]
+
+[formatter.python]
+command = "ruff"
+options = ["format"]
+includes = ["*.py"]
+
+[formatter.yaml]
+command = "yamlfmt"
+options = ["-conf", "codeqa/configs/yamlfmt.yml"]
+includes = ["*.yaml", "*.yml"]
+excludes = [".copier-answers.yml"]
+priority = 1
+
+[formatter.toml]
+command = "toml-sort"
+includes = ["*.toml"]
+priority = 1
+
+[formatter.just]
+command = "justfmt"
+options = ["--fmt", "--unstable"]
+includes = ["justfile"]
+
+[formatter.json]
+command = "python"
+options = ["scripts/jsonfmt.py", "4"]
+includes = ["*.json"]
+
+[formatter.mdsf]
+command = "mdsf"
+options = [
+    "format",
+    "--config",
+    "codeqa/configs/mdsf.json",
+    "--cache",
+    ".cache/mdsf_cache/",
+]
+excludes = ["docs/md/*.md", "docs/md/**/*.md"]
+includes = ["*.md"]
+priority = 1
+
+[formatter.mkdocs]
+command = "python"
+options = ["scripts/format-mkdocs.py"]
+includes = ["docs/md/*.md", "docs/md/**/*.md"]
+priority = 2
+
+[formatter.markdown]
+command = "mdformat"
+options = ["--no-codeformatters"]
+includes = ["*.md"]
+excludes = ["docs/md/*.md", "docs/md/**/*.md"]
+priority = 2
+
+[formatter.shell]
+command = "shfmt"
+includes = ["*.sh", "*.bash", "*.envrc", "*.envrc.*", "*justfmt"]
+options = ["--simplify", "--write", "--indent", "2"]

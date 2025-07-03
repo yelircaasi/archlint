@@ -1,0 +1,98 @@
+:root>* {
+  --md-code-hl-string-color: #0FF1CE;
+
+  /* --md-code-fg-color
+    --md-code-bg-color
+    --md-code-hl-color
+
+    --md-code-hl-number-color
+    --md-code-hl-special-color
+    --md-code-hl-function-color
+    --md-code-hl-constant-color
+    --md-code-hl-keyword-color
+    --md-code-hl-string-color
+    --md-code-hl-name-color
+    --md-code-hl-operator-color
+    --md-code-hl-punctuation-color
+    --md-code-hl-comment-color
+    --md-code-hl-generic-color
+    --md-code-hl-variable-color */
+}
+
+.highlight .k {
+  color: #555357;
+}
+
+.highlight .o {
+  color: #77EE77;
+}
+
+.highlight .kn {
+  color: #116311;
+}
+
+.highlight .p {
+  color: #718132;
+}
+
+.highlight .n {
+  color: #1f9195;
+}
+
+.highlight .nn {
+  color: #3459a8;
+}
+
+.md-typeset table {
+  border-collapse: collapse;
+  width: auto;
+  table-layout: auto;
+  font-size: .6rem;
+}
+
+
+
+.md-typeset th,
+.md-typeset td,
+.md-typeset table th,
+.md-typeset table td,
+.md-typeset__table th,
+.md-typeset__table td {
+  border: 1px solid #bbb;
+  padding: 1em;
+  text-align: center;
+  white-space: nowrap;
+  min-width: unset;
+  max-width: unset;
+  width: auto;
+  table-layout: auto;
+}
+
+
+.md-typeset td,
+.md-typeset th {
+  border-top: .05rem solid var(--md-typeset-table-color);
+  padding: 1.2em 0.5em !important;
+  vertical-align: top;
+  width: auto !important;
+  min-width: unset !important;
+  max-width: unset !important;
+}
+
+.md-typeset th {
+  text-align: center !important;
+}
+
+/* Thicker border for the first row (all cells in the first <tr>) */
+.md-typeset table tr:first-of-type th,
+.md-typeset table tr:first-of-type td {
+  border-top: 2px solid #bbb;
+}
+
+/* Thicker border for the first column (first cell in each row) */
+.md-typeset table tr th:first-of-type,
+.md-typeset table tr td:first-of-type {
+  border-left: 2px solid #bbb;
+  border-right: 2px solid #bbb;
+  font-weight: bold;
+}

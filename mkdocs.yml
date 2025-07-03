@@ -1,0 +1,51 @@
+---
+site_name: archlint Documentation
+docs_dir: docs/md
+site_dir: docs/site
+nav:
+    - About: index.md
+    - __init__: init.md
+    - cli: cli.md
+    - configuration: configuration.md
+    - collection: collection.md
+    - logic: logic.md
+    - reporting: reporting.md
+    - regexes: regexes.md
+    - utils: utils.md
+plugins:
+    - mkdocstrings:
+        enabled: true
+        default_handler: python
+        handlers:
+            python:
+                paths:
+                    - "./src"
+                options:
+                    show_signature_annotations: true
+                    show_symbol_type_toc: true
+                    show_inheritance_diagram: false
+                    docstring_section_style: list
+                    summary: false
+                    show_root_heading: true
+                    show_source: false
+                    show_submodules: false
+                    members: true
+                    group_by_category: true
+theme:
+    name: material
+    palette:
+        scheme: slate
+        accent: teal
+    highlightjs: false
+extra_css:
+    - stylesheets/extra.css
+markdown_extensions:
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        use_pygments: true
+        pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
+use_directory_urls: true
