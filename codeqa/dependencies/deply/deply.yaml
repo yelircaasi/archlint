@@ -1,0 +1,50 @@
+---
+deply:
+    paths:
+        - src/archlint
+    exclude_files:
+        - ".*__pycache__/.*"
+        - ".*\\.pyc$"
+        - ".*\\.pyo$"
+        - ".*\\.venv/.*"
+        - ".*\\.env/.*"
+        - ".*\\.git/.*"
+    layers:
+        - name: main
+          collectors:
+            - type: file_regex
+              pattern: ".*__main__\\.py$"
+        - name: core_modules
+          collectors:
+            - type: file_regex
+              pattern: ".*/linus/.*\\.py$"
+            - type: file_regex
+              pattern: ".*/guido/.*\\.py$"
+            - type: file_regex
+              pattern: ".*/grace/.*\\.py$"
+        - name: utilities
+          collectors:
+            - type: file_regex
+              pattern: ".*/utils/.*\\.py$"
+        - name: greetings
+          collectors:
+            - type: file_regex
+              pattern: ".*/greeting\\.py$"
+    rules:
+        - name: main_isolation
+          description: "Main module should not import from greeting modules directly"
+          forbidden:
+            - from: main
+              to: greetings
+        - name: utilities_independence
+          description: "Utilities should not depend on core modules"
+          forbidden:
+            - from: utilities
+              to: core_modules
+            - from: utilities
+              to: greetings
+        - name: module_separation
+          description: "Core modules should be independent of each other"
+          forbidden:
+            - from: core_modules
+              to: core_modules

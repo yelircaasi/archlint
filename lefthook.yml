@@ -1,0 +1,30 @@
+---
+colors: true
+parallel: true
+output:
+    - summary
+    - failure
+    - success
+skip_output:
+    - empty_summary
+pre-commit:
+    jobs:
+        - run: mypy --cache-dir .cache/mypy_cache {files}
+          glob: "*.py"
+          files: git diff --name-only main
+          stage_fixed: true
+        - run: ruff check --fix {staged_files}
+          tags: check lint
+          files: git diff --name-only main
+          glob: "*.py"
+          stage_fixed: true
+        - run: treefmt --fail-on-change
+          tags: check lint
+          stage_fixed: true
+        - run: just sbom
+          tags: security
+          stage_fixed: true
+commit-msg:
+    commands:
+        commitizen:
+            run: cz check --commit-msg-file {1}

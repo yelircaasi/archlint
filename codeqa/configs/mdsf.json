@@ -1,0 +1,12 @@
+{
+    "$schema": "https://raw.githubusercontent.com/hougesen/mdsf/main/schemas/v0.5.1/mdsf.schema.json",
+    "custom_file_extensions": {},
+    "format_finished_document": false,
+    "javascript_runtime": "node",
+    "language_aliases": {
+        "py": "python"
+    },
+    "languages": {
+        "python": "ruff:format"
+    }
+}
