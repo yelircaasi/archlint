@@ -105,13 +105,21 @@ def make_ooo_report(
     actual_methods = list(filter(lambda p: not p.islower(), actual))
     expected_methods = list(filter(lambda p: not p.islower(), actual))
     function_report = (
-        f"{make_bar(' FUNCTION ORDERING ', Color.red)}\n\n"
-        f"    {'\n    '.join(map(make_line, zip(actual_functions, expected_functions)))}\n\n"
-    ) if actual_functions != expected_functions else ""
+        (
+            f"{make_bar(' FUNCTION ORDERING ', Color.red)}\n\n"
+            f"    {'\n    '.join(map(make_line, zip(actual_functions, expected_functions)))}\n\n"
+        )
+        if actual_functions != expected_functions
+        else ""
+    )
     method_report = (
-        f"{make_bar(' CLASS & METHOD ORDERING ', Color.red)}\n\n"
-        f"    {'\n    '.join(map(make_line, zip(actual_methods, expected_methods)))}\n\n"
-    ) if actual_methods != expected_methods else ""
+        (
+            f"{make_bar(' CLASS & METHOD ORDERING ', Color.red)}\n\n"
+            f"    {'\n    '.join(map(make_line, zip(actual_methods, expected_methods)))}\n\n"
+        )
+        if actual_methods != expected_methods
+        else ""
+    )
     return (function_report) + (method_report)
 
 

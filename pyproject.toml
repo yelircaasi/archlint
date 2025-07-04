@@ -268,13 +268,12 @@ utils = ["utils"]
 
 [tool.archlint.imports.allowed.internal]
 utils = [
-    "regexes"
+    "regexes",
 ]
 
 [tool.archlint.imports.allowed.external]
 utils = [
     "deal",
-    
 ]
 
 [tool.archlint.method_order]
