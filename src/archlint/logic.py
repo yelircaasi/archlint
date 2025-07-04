@@ -118,7 +118,10 @@ def compute_disallowed(
 ) -> SetDict:
     violations: SetDict = {s: set() for s in set(allowed) | set(disallowed)}
     if allowed and disallowed:
-        print("Specifying 'allowed' and 'disallowed' imports does not make sense; using 'allowed' (restrictive).")
+        print(
+            "Specifying 'allowed' and 'disallowed' imports does not make sense; "
+            "using 'allowed' (restrictive)."
+        )
     if allowed:
         for module, imports in allowed.items():
             if module not in graph.modules:
@@ -187,11 +190,12 @@ def analyze_discrepancies(
     actual: list[str],
     expected: list[str],
     allow_additional: bool = False,
-) -> tuple[list[str], list[str]]:
+) -> tuple[list[str], list[str], set[str]]:
     actual_set = set(actual)
     expected_set = set(expected)
 
     missing = [t for t in expected if t not in actual_set]
     unexpected = [] if allow_additional else [t for t in actual if t not in expected_set]
+    overlap = actual_set.intersection(expected_set)
 
-    return missing, unexpected
+    return missing, unexpected, overlap

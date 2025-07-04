@@ -41,7 +41,7 @@ class Objects:
 
     @property
     def strings(self) -> list[str]:
-        return self.function_strings + self.method_strings
+        return self.method_strings + self.function_strings
 
     @property
     def methodless(self) -> list[str]:

@@ -48,7 +48,9 @@ def get_import_config(raw_config: dict, module_name: str) -> ImportConfig:
                 raw_import_config["internal_allowed_everywhere"],
             )
         ),
-        external_allowed_everywhere=set(cast(list[str], raw_import_config["external_allowed_everywhere"])),
+        external_allowed_everywhere=set(
+            cast(list[str], raw_import_config["external_allowed_everywhere"])
+        ),
         allowed=ImportInfo(
             internal=fix_internal(
                 raw_import_config["allowed"].get("internal", {}), mod_name=module_name

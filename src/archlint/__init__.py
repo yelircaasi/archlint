@@ -40,7 +40,7 @@ def check_docs_structure(
         partial(map_to_doc, cfg=cfg), cfg.docs.ignore, include_methodless=True
     )
     expected: list[str] = sort_on_path(deduplicate_ordered(duplicated))
-    missing, unexpected = analyze_discrepancies(
+    missing, unexpected, overlap = analyze_discrepancies(
         actual, expected, allow_additional=cfg.docs.allow_additional
     )
 
@@ -50,7 +50,14 @@ def check_docs_structure(
 
     return (
         make_discrepancy_report(
-            "DOCUMENTATION", missing, unexpected, cfg.docs.md_dir, cfg.root_dir
+            "DOCUMENTATION",
+            actual,
+            expected,
+            missing,
+            unexpected,
+            overlap,
+            cfg.docs.md_dir,
+            cfg.root_dir,
         ),
         any((missing, unexpected)),
     )
@@ -63,12 +70,21 @@ def check_tests_structure(
     expected: list[str] = sort_on_path(
         source_objects.apply(partial(map_to_test, cfg=cfg), cfg.tests.ignore)
     )
-    missing, unexpected = analyze_discrepancies(
+    missing, unexpected, overlap = analyze_discrepancies(
         actual, expected, allow_additional=cfg.tests.allow_additional
     )
 
     return (
-        make_discrepancy_report("TESTS", missing, unexpected, cfg.tests.unit_dir, cfg.root_dir),
+        make_discrepancy_report(
+            "TESTS",
+            actual,
+            expected,
+            missing,
+            unexpected,
+            overlap,
+            cfg.tests.unit_dir,
+            cfg.root_dir,
+        ),
         any((missing, unexpected)),
     )
 
