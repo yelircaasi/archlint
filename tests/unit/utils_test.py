@@ -161,7 +161,9 @@ class TestColor:
         ...
 
 
-def test_make_colorize_path(): ...
+def test_make_colorize_path():
+    # TODO
+    ...
 
 
 def test_make_double_bar():

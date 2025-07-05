@@ -3,19 +3,29 @@ import re
 from archlint.cli import main
 
 
-def test_archlint_cli(): ...
+def test_archlint_cli():
+    # TODO
+    ...
 
 
-def test_tests(): ...
+def test_tests():
+    # TODO
+    ...
 
 
-def test_docs(): ...
+def test_docs():
+    # TODO
+    ...
 
 
-def test_imports(): ...
+def test_imports():
+    # TODO
+    ...
 
 
-def test_methods(): ...
+def test_methods():
+    # TODO
+    ...
 
 
 def test_main(capsys):

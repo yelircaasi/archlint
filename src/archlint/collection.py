@@ -23,7 +23,7 @@ ClassInfoBase = tuple[str, list[str], dict[str, str], list[str]]
 class Objects:
     def __init__(self, functions: list[tuple[Path, int, str]], classes: list[ClassInfo]):
         self.functions = functions
-        self.classes = classes
+        self.classes = add_inherited_methods(classes)
 
     @property
     def function_strings(self) -> list[str]:
@@ -128,14 +128,14 @@ def collect_source_objects(src_dir: Path, root_dir: Path) -> Objects:
 
 
 def add_inherited_methods(
-    class_tuples: list[tuple[Path, str, list[str], list[str]]],
-) -> list[tuple[Path, str, list[str], list[str]]]:
-    methods = {name: methods for _, name, methods, __ in class_tuples}
-    superclasses: dict[str, list[str]] = {name: supers for _, name, __, supers in class_tuples}
+    class_tuples: list[ClassInfo],
+) -> list[ClassInfo]:
+    methods = {d[2]: d[3] for d in class_tuples}
+    superclasses = {d[2]: d[5] for d in class_tuples}
 
     for _ in range(2):
         for classname, superclass_names in superclasses.items():
-            inherited = set(chain.from_iterable([methods.get(sc, []) for sc in superclass_names]))
-            methods[classname] = list(set(methods[classname]) | inherited)
+            inherited = list(chain.from_iterable([methods.get(sc, []) for sc in superclass_names]))
+            methods[classname] = deduplicate_ordered(methods[classname] + inherited)
 
-    return [(p, n, methods[n], s) for p, n, _, s in class_tuples]
+    return [(p, i, n, methods[n], md, s) for p, i, n, _, md, s in class_tuples]

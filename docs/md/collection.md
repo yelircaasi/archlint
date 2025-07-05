@@ -42,6 +42,7 @@ This is the documentation page for the module `collection`.
         show_root_heading: true
         show_source: false
         
+
 ## ::: archlint.collection.collect_object_texts
     handler: python
     options:
