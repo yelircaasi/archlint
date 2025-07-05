@@ -111,6 +111,16 @@ This is the documentation page for the module `utils`.
         show_root_heading: true
         show_source: false
 
+## ::: archlint.utils.remove_ordering_index
+    handler: python
+    options:
+        show_root_full_path: false
+        show_root_full_path: false
+        summary: false
+        inherited_members: false
+        show_root_heading: true
+        show_source: false
+
 ## ::: archlint.utils.prepend_module_name
     handler: python
     options:
@@ -201,6 +211,15 @@ This is the documentation page for the module `utils`.
         show_root_heading: true
         show_source: false
 
+## ::: archlint.utils.Color
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        inherited_members: false
+        show_root_heading: true
+        show_source: false
+
 ## ::: archlint.utils.make_colorize_path
     handler: python
     options:
@@ -238,15 +257,6 @@ This is the documentation page for the module `utils`.
         show_source: false
 
 ## ::: archlint.utils.indented
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.utils.Color
     handler: python
     options:
         show_root_full_path: false

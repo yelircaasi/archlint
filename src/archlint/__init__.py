@@ -24,7 +24,7 @@ def check_method_order(cfg: Configuration, source_objects: Objects) -> tuple[str
     out_of_order = []
     classes = source_objects.classes
 
-    for path, classname, methods, method_dict, _ in classes:
+    for path, _, classname, methods, method_dict, __ in classes:
         sorted_methods = sort_methods(method_dict, cfg.method_order)
         if methods != sorted_methods:
             out_of_order.append((path, classname, methods, sorted_methods))
@@ -43,10 +43,6 @@ def check_docs_structure(
     missing, unexpected, overlap = analyze_discrepancies(
         actual, expected, allow_additional=cfg.docs.allow_additional
     )
-
-    # print(actual)
-    # print()
-    # print(docs_objects.strings)
 
     return (
         make_discrepancy_report(

@@ -28,7 +28,9 @@ def walk_absolute_paths():
 
 
 def move_path(p: str | Path, old_base: Path, new_base: Path, root: Path) -> Path:
-    return (new_base / (Path(p).relative_to(old_base))).relative_to(root)
+    p = Path(p).absolute()
+    p = new_base / p.relative_to(old_base)
+    return (new_base / p).relative_to(root)
 
 
 def relativize(p: str | Path, root_dir: Path) -> Path:
@@ -57,7 +59,7 @@ def project(single: Any, _list: list[tuple] | list[str]) -> list[tuple]:
 
 
 def sort_on_path(strings: Iterable[str]) -> list[str]:
-    return sorted(strings, key=lambda s: s.split(":")[0])
+    return sorted(strings, key=lambda s: s.rsplit(":", maxsplit=1)[0])
 
 
 # SEQUENCE PROCESSING --------------------------------------------------------
@@ -88,6 +90,10 @@ def anywhere(sset: set[str], substring: str) -> bool:
 
 
 # STRING PROCESSING ----------------------------------------------------------
+
+
+def remove_ordering_index(s: str) -> str:
+    return re.sub(r":\d+:", ":", s)
 
 
 def prepend_module_name(s: str, module_name: str) -> str:
@@ -203,6 +209,7 @@ def make_colorize_path(specific_dir: Path, root_dir: Path) -> Callable[[str], st
 
     def colorize_path(s: str) -> str:
         new_colon = "\u001b[0m:\u001b[31m"
+        s = remove_ordering_index(s)
         s = s.replace(doc_prefix, new_doc_prefix).replace(":", new_colon) + "\u001b[0m"
         return s
 

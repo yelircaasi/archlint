@@ -11,6 +11,7 @@ from .utils import (
     filter_without,
     move_path,
     path_matches,
+    remove_ordering_index,
 )
 
 SetDict = dict[str, set[str]]
@@ -44,6 +45,7 @@ def make_doc_filename(p: Path) -> Path:
 
 def make_test_method_path(
     p: Path,
+    i: str,
     class_name: str,
     method_name: str,
     file_per_class: re.Pattern,
@@ -54,35 +56,36 @@ def make_test_method_path(
     else:
         p = path_matches(p, file_per_directory) or p
 
-    return f"{make_test_filename(p)}:Test{class_name}.{make_test_method(method_name)}"
+    return f"{make_test_filename(p)}:{i}:Test{class_name}.{make_test_method(method_name)}"
 
 
-def make_doc_class_path(p: Path, class_name: str, cfg: Configuration) -> str:
+def make_doc_class_path(p: Path, i: str, class_name: str, cfg: Configuration) -> str:
     if _p := path_matches(p, cfg.docs.file_per_class):
         p = _p.parent / class_name.lower()
     else:
         p = path_matches(p, cfg.docs.file_per_directory) or p
 
-    return f"{make_doc_filename(p)}:{class_name}"
+    return f"{make_doc_filename(p)}:{i}:{class_name}"
 
 
-def make_test_function_path(p: Path, function_name: str, cfg: Configuration) -> str:
+def make_test_function_path(p: Path, i: str, function_name: str, cfg: Configuration) -> str:
     p = path_matches(p, cfg.tests.file_per_directory) or p
-    return f"{make_test_filename(p)}:test_{function_name}"
+    return f"{make_test_filename(p)}:{i}:test_{function_name}"
 
 
-def make_doc_function_path(p: Path, function_name: str, cfg: Configuration) -> str:
+def make_doc_function_path(p: Path, i: str, function_name: str, cfg: Configuration) -> str:
     p = path_matches(p, cfg.docs.file_per_directory) or p
-    return f"{make_doc_filename(p)}:{function_name}"
+    return f"{make_doc_filename(p)}:{i}:{function_name}"
 
 
 def map_to_test(s: str, cfg: Configuration) -> str:
-    path_str, ob = s.split(":")
+    path_str, i, ob = s.split(":")
     path_ = move_path(path_str, cfg.module_root_dir, cfg.tests.unit_dir, cfg.root_dir)
     if "." in ob:
         class_name, method_name = ob.split(".")
         result = make_test_method_path(
             path_,
+            i,
             class_name,
             method_name,
             cfg.tests.file_per_class,
@@ -91,20 +94,20 @@ def map_to_test(s: str, cfg: Configuration) -> str:
     elif ob[0].isupper():
         return ""
     else:
-        result = make_test_function_path(path_, ob, cfg)
+        result = make_test_function_path(path_, i, ob, cfg)
     if not cfg.tests.keep_double_underscore:
         return dedup_underscores(result)
     return result
 
 
 def map_to_doc(s: str, cfg: Configuration) -> str:
-    path_str, ob = s.split(":")
+    path_str, i, ob = s.split(":")
     path_ = move_path(path_str, cfg.module_root_dir, cfg.docs.md_dir, cfg.root_dir)
     if "." in ob:
         class_name, _ = ob.split(".")
-        result = make_doc_class_path(path_, class_name, cfg)
+        result = make_doc_class_path(path_, i, class_name, cfg)
     else:
-        result = make_doc_function_path(path_, ob, cfg)
+        result = make_doc_function_path(path_, i, ob, cfg)
     if not cfg.docs.keep_double_underscore:
         return dedup_underscores(result)
     return result
@@ -191,8 +194,8 @@ def analyze_discrepancies(
     expected: list[str],
     allow_additional: bool = False,
 ) -> tuple[list[str], list[str], set[str]]:
-    actual_set = set(actual)
-    expected_set = set(expected)
+    actual_set = set(actual := list(map(remove_ordering_index, actual)))
+    expected_set = set(expected := list(map(remove_ordering_index, expected)))
 
     missing = [t for t in expected if t not in actual_set]
     unexpected = [] if allow_additional else [t for t in actual if t not in expected_set]

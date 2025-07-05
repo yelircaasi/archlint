@@ -7,6 +7,7 @@ from .utils import (
     make_bar,
     make_colorize_path,
     make_double_bar,
+    remove_ordering_index,
 )
 
 
@@ -84,7 +85,7 @@ def make_unexpected_report(unexpected: list[str], painter: Callable[[str], str])
 def make_ooo_report(
     actual: list[str], expected: list[str], overlap: set[str], painter: Callable[[str], str]
 ) -> str:
-    minlen = max(map(len, overlap)) + 18
+    minlen = max(map(len, overlap)) + 18 if overlap else 5
 
     def make_line(method_pair: tuple[str, str]) -> str:
         actual_method, expected_method = method_pair
@@ -100,27 +101,10 @@ def make_ooo_report(
     expected = list(filter(lambda p: p in overlap, expected))
     if actual == expected:
         return ""
-    actual_functions = list(filter(lambda p: p.islower(), actual))
-    expected_functions = list(filter(lambda p: p.islower(), actual))
-    actual_methods = list(filter(lambda p: not p.islower(), actual))
-    expected_methods = list(filter(lambda p: not p.islower(), actual))
-    function_report = (
-        (
-            f"{make_bar(' FUNCTION ORDERING ', Color.red)}\n\n"
-            f"    {'\n    '.join(map(make_line, zip(actual_functions, expected_functions)))}\n\n"
-        )
-        if actual_functions != expected_functions
-        else ""
+    return (
+        f"{make_bar(' ORDERING MISMATCH ', Color.red)}\n\n"
+        f"    {'\n    '.join(map(make_line, zip(actual, expected)))}\n\n"
     )
-    method_report = (
-        (
-            f"{make_bar(' CLASS & METHOD ORDERING ', Color.red)}\n\n"
-            f"    {'\n    '.join(map(make_line, zip(actual_methods, expected_methods)))}\n\n"
-        )
-        if actual_methods != expected_methods
-        else ""
-    )
-    return (function_report) + (method_report)
 
 
 def make_discrepancy_report(
@@ -135,6 +119,8 @@ def make_discrepancy_report(
 ):
     title = f" {title.upper()} "
     paint = make_colorize_path(specific_path, root_dir)
+    actual = list(map(remove_ordering_index, actual))
+    expected = list(map(remove_ordering_index, expected))
     order_report = make_ooo_report(actual, expected, overlap, paint)
 
     if not (missing or unexpected or order_report):

@@ -1,6 +1,5 @@
 import re
 from collections.abc import Callable
-from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from pathlib import Path
@@ -17,18 +16,18 @@ from .utils import (
     safe_search,
 )
 
-ClassInfo = tuple[Path, str, list[str], dict[str, str], list[str]]
-ClassInfoPathless = tuple[str, list[str], dict[str, str], list[str]]
+ClassInfo = tuple[Path, int, str, list[str], dict[str, str], list[str]]
+ClassInfoBase = tuple[str, list[str], dict[str, str], list[str]]
 
 
-@dataclass
 class Objects:
-    functions: list[tuple[Path, str]]
-    classes: list[ClassInfo]
+    def __init__(self, functions: list[tuple[Path, int, str]], classes: list[ClassInfo]):
+        self.functions = functions
+        self.classes = classes
 
     @property
     def function_strings(self) -> list[str]:
-        return [f"{p}:{func}" for p, func in self.functions]
+        return [f"{p}:{i:0>3}:{func}" for p, i, func in self.functions]
 
     @property
     def method_strings(self) -> list[str]:
@@ -36,8 +35,8 @@ class Objects:
             return list(chain.from_iterable(_l))
 
         _classes = sorted(self.classes, key=lambda tup: tup[0])
-        triples = _chain([[(p, c, m) for m in methods] for p, c, methods, _, __ in _classes])
-        return [f"{p}:{c}.{m}" for p, c, m in triples]
+        quads = _chain([[(p, i, c, m) for m in methods] for p, i, c, methods, _, __ in _classes])
+        return [f"{p}:{i:0>3}:{c}.{m}" for p, i, c, m in quads]
 
     @property
     def strings(self) -> list[str]:
@@ -45,7 +44,7 @@ class Objects:
 
     @property
     def methodless(self) -> list[str]:
-        return [f"{p}:{cl}" for p, cl, methods, _, __ in self.classes if not methods]
+        return [f"{p}:{i:0>3}:{cl}" for p, i, cl, methods, _, __ in self.classes if not methods]
 
     def ignore_matching(self, pattern: re.Pattern) -> Self:
         self.functions = self.functions
@@ -64,7 +63,7 @@ class Objects:
         return list(filter(bool, map(processor, _strings)))
 
 
-def collect_method_info(class_text: str) -> ClassInfoPathless:
+def collect_method_info(class_text: str) -> ClassInfoBase:
     def is_method(_s: str) -> bool:
         return _s.startswith(("def", "@"))
 
@@ -83,69 +82,47 @@ def collect_method_info(class_text: str) -> ClassInfoPathless:
     return class_name, method_names, method_dict, super_classes
 
 
-def collect_functions_in_text(
-    src_text: str, condition: Callable[[str], bool] = always_true
-) -> list[str]:
-    return list(
-        filter(
-            condition,
-            re.findall(Regex.FUNCTION_NAME, src_text) + re.findall(Regex.DATACLASS_NAME, src_text),
-        )
-    )
-
-
-def collect_classes_in_text(src_text: str) -> list[ClassInfoPathless]:
-    class_info: list[ClassInfoPathless] = []
-    src_text = src_text.replace("@dataclass\nclass ", "\nclass ").replace("\n\n\n", "\n\n")
-    classes = re.findall(Regex.CLASS_TEXT, src_text)
-    for class_text in classes:
-        class_name, method_names, method_dict, super_classes = collect_method_info(class_text)
-        class_info.append((class_name, method_names, method_dict, super_classes))
-
-    return class_info
-
-
-def collect_tests_objects(unit_tests_dir: Path, project_root: Path) -> Objects:
-    functions: list[tuple[Path, str]] = []
-    classes: list[ClassInfo] = []
-
-    for _p in sorted(unit_tests_dir.rglob("*.py")):
-        source = _p.read_text()
-        p = _p.relative_to(project_root)
-        functions.extend(project(p, collect_functions_in_text(source)))
-        classes.extend(project(p, collect_classes_in_text(source)))
-
-    return Objects(functions=functions, classes=classes)
+def parse_function(src_text: str, condition: Callable[[str], bool] = always_true) -> str:
+    return safe_search(
+        Regex.FUNCTION_NAME, src_text, 1
+    )  # + re.findall(Regex.DATACLASS_NAME, src_text),
 
 
 def collect_objects_in_md(
     src_text: str, condition: Callable[[str], bool] = always_true
-) -> list[str]:
-    # print(re.findall(Regex.OBJECT_IN_MD, src_text))
-    return list(filter(condition, re.findall(Regex.OBJECT_IN_MD, src_text)))
+) -> list[tuple[int, str]]:
+    return list(enumerate(filter(condition, re.findall(Regex.OBJECT_IN_MD, src_text))))
 
 
 def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
-    functions: list[tuple[Path, str]] = []
+    functions: list[tuple[Path, int, str]] = []
 
     for _p in sorted(md_dir.rglob("*.md")):
-        # print(_p)
         source = _p.read_text()
         p = _p.relative_to(project_root)
-        new_functions = cast(list[tuple[Path, str]], project(p, collect_objects_in_md(source)))
+        new_functions = cast(list[tuple[Path, int, str]], project(p, collect_objects_in_md(source)))
         functions.extend(new_functions)
 
-    # print(functions)
     return Objects(functions=functions, classes=[])
 
 
-def collect_source_objects(src_dir: Path) -> Objects:
-    functions: list[tuple[Path, str]] = []
+def collect_object_texts(source: str) -> list[str]:
+    return re.findall(Regex.OBJECT_TEXT, source)
+
+
+def collect_source_objects(src_dir: Path, root_dir: Path) -> Objects:
+    functions: list[tuple[Path, int, str]] = []
     classes: list[ClassInfo] = []
 
-    for p in sorted(src_dir.rglob("*.py")):
-        functions.extend(project(p, collect_functions_in_text(source := p.read_text())))
-        classes.extend(project(p, collect_classes_in_text(source)))
+    for _p in sorted(src_dir.rglob("*.py")):
+        p = _p.relative_to(root_dir)
+        for i, text in enumerate(collect_object_texts(_p.read_text())):
+            if text.startswith(("@dataclass", "class ")):
+                if class_tuple := collect_method_info(text):
+                    classes.append((p, i, *class_tuple))
+            elif text.startswith(("@", "def ")):
+                if func_name := parse_function(text):
+                    functions.append((p, i, func_name))
 
     return Objects(functions=functions, classes=classes)
 

@@ -18,23 +18,7 @@ This is the documentation page for the module `collection`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.collection.collect_functions_in_text
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.collection.collect_classes_in_text
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.collection.collect_tests_objects
+## ::: archlint.collection.parse_function
     handler: python
     options:
         show_root_full_path: false
@@ -51,6 +35,14 @@ This is the documentation page for the module `collection`.
         show_source: false
 
 ## ::: archlint.collection.collect_docs_objects
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+        
+## ::: archlint.collection.collect_object_texts
     handler: python
     options:
         show_root_full_path: false

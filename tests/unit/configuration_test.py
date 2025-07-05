@@ -1,9 +1,3 @@
-class TestImportConfig:
-    def test_fix_internal(self): ...
-
-    def test_fix_external(self): ...
-
-
 def test_get_import_config(): ...
 
 

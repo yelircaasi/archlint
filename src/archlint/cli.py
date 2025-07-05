@@ -11,7 +11,6 @@ from . import (
 from .collection import (
     collect_docs_objects,
     collect_source_objects,
-    collect_tests_objects,
 )
 from .configuration import Configuration, get_config
 
@@ -30,8 +29,8 @@ def archlint_cli(ctx: click.Context):
 @click.pass_context
 def tests(ctx: click.Context, fail_fast: bool) -> bool:
     cfg: Configuration = ctx.obj["CFG"]
-    source_objects = collect_source_objects(cfg.module_root_dir)
-    tests_objects = collect_tests_objects(cfg.tests.unit_dir, cfg.root_dir)
+    source_objects = collect_source_objects(cfg.module_root_dir, cfg.root_dir)
+    tests_objects = collect_source_objects(cfg.tests.unit_dir, cfg.root_dir)
 
     report, problems = check_tests_structure(cfg, source_objects, tests_objects)
     click.echo(report)
@@ -45,7 +44,7 @@ def tests(ctx: click.Context, fail_fast: bool) -> bool:
 @click.pass_context
 def docs(ctx: click.Context, check_links: bool) -> bool:
     cfg: Configuration = ctx.obj["CFG"]
-    source_objects = collect_source_objects(cfg.module_root_dir)
+    source_objects = collect_source_objects(cfg.module_root_dir, cfg.root_dir)
     docs_objects = collect_docs_objects(cfg.docs.md_dir, cfg.root_dir)
 
     report, problems = check_docs_structure(cfg, source_objects, docs_objects)
@@ -71,7 +70,7 @@ def imports(ctx: click.Context, allow_cycles: bool) -> bool:
 @click.pass_context
 def methods(ctx: click.Context, max_lines: int) -> bool:
     cfg: Configuration = ctx.obj["CFG"]
-    source_objects = collect_source_objects(cfg.module_root_dir)
+    source_objects = collect_source_objects(cfg.module_root_dir, cfg.root_dir)
     report, problems = check_method_order(cfg, source_objects)
     click.echo(report)
     click.echo()
@@ -85,8 +84,8 @@ def methods(ctx: click.Context, max_lines: int) -> bool:
 def _(ctx: click.Context, max_lines: int) -> bool:
     cfg: Configuration = ctx.obj["CFG"]
 
-    source_objects = collect_source_objects(cfg.module_root_dir)
-    tests_objects = collect_tests_objects(cfg.tests.unit_dir, cfg.root_dir)
+    source_objects = collect_source_objects(cfg.module_root_dir, cfg.root_dir)
+    tests_objects = collect_source_objects(cfg.tests.unit_dir, cfg.root_dir)
     docs_objects = collect_docs_objects(cfg.docs.md_dir, cfg.root_dir)
 
     mo_report, mo_problems = check_method_order(cfg, source_objects)

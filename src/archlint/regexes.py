@@ -2,6 +2,13 @@ import re
 
 
 class Regex:
+    OBJECT_TEXT = CLASS_TEXT = re.compile(
+        (
+            r"class [A-Za-z_][^\n]+:.+?\n\n\n|class [A-Za-z_][^\n]+:.+?$"
+            r"|(?<=\n)def [^\n]+\(|^def [^\n]+\("
+        ),
+        re.DOTALL,
+    )
     CLASS_NAME = re.compile(r"class ([A-Za-z_][A-Za-z_0-9]+)[:\(]")
     CLASS_TEXT = re.compile(
         r"class [A-Za-z_][^\n]+:.+?\n\n\n|class [A-Za-z_][^\n]+:.+?$", re.DOTALL
