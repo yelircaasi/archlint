@@ -3,7 +3,7 @@ from collections.abc import Callable
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Self, cast
+from typing import cast
 
 from .regexes import Regex
 from .utils import (
@@ -46,11 +46,6 @@ class Objects:
     def methodless(self) -> list[str]:
         return [f"{p}:{i:0>3}:{cl}" for p, i, cl, methods, _, __ in self.classes if not methods]
 
-    def ignore_matching(self, pattern: re.Pattern) -> Self:
-        self.functions = self.functions
-        self.classes = self.classes
-        return self
-
     def apply(
         self,
         processor: Callable[[str], str],
@@ -83,9 +78,7 @@ def collect_method_info(class_text: str) -> ClassInfoBase:
 
 
 def parse_function(src_text: str, condition: Callable[[str], bool] = always_true) -> str:
-    return safe_search(
-        Regex.FUNCTION_NAME, src_text, 1
-    )  # + re.findall(Regex.DATACLASS_NAME, src_text),
+    return safe_search(Regex.FUNCTION_NAME, src_text, 1)
 
 
 def collect_objects_in_md(
@@ -127,9 +120,7 @@ def collect_source_objects(src_dir: Path, root_dir: Path) -> Objects:
     return Objects(functions=functions, classes=classes)
 
 
-def add_inherited_methods(
-    class_tuples: list[ClassInfo],
-) -> list[ClassInfo]:
+def add_inherited_methods(class_tuples: list[ClassInfo]) -> list[ClassInfo]:
     methods = {d[2]: d[3] for d in class_tuples}
     superclasses = {d[2]: d[5] for d in class_tuples}
 

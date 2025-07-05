@@ -13,17 +13,7 @@ def test_get_project_root():
     ...
 
 
-def test_walk_absolute_paths():
-    # TODO
-    ...
-
-
 def test_move_path():
-    # TODO
-    ...
-
-
-def test_relativize():
     # TODO
     ...
 
@@ -59,11 +49,6 @@ def test_filter_with():
 
 
 def test_filter_without():
-    # TODO
-    ...
-
-
-def test_anywhere():
     # TODO
     ...
 
@@ -172,15 +157,5 @@ def test_make_double_bar():
 
 
 def test_make_bar():
-    # TODO
-    ...
-
-
-def test_make_half_bar():
-    # TODO
-    ...
-
-
-def test_indented():
     # TODO
     ...

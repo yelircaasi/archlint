@@ -2,6 +2,14 @@
 
 This is the documentation page for th `cli` module.
 
+## ::: archlint.cli.main
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
 ## ::: archlint.cli.archlint_cli
     handler: python
     options:
@@ -10,7 +18,7 @@ This is the documentation page for th `cli` module.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.cli.tests
+## ::: archlint.cli.run_all
     handler: python
     options:
         show_root_full_path: false
@@ -42,7 +50,7 @@ This is the documentation page for th `cli` module.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.cli.main
+## ::: archlint.cli.tests
     handler: python
     options:
         show_root_full_path: false

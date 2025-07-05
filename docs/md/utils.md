@@ -12,25 +12,7 @@ This is the documentation page for the module `utils`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.utils.walk_absolute_paths
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
 ## ::: archlint.utils.move_path
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.utils.relativize
     handler: python
     options:
         show_root_full_path: false
@@ -94,15 +76,6 @@ This is the documentation page for the module `utils`.
         show_source: false
 
 ## ::: archlint.utils.filter_without
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.utils.anywhere
     handler: python
     options:
         show_root_full_path: false
@@ -239,24 +212,6 @@ This is the documentation page for the module `utils`.
         show_source: false
 
 ## ::: archlint.utils.make_bar
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.utils.make_half_bar
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        inherited_members: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.utils.indented
     handler: python
     options:
         show_root_full_path: false

@@ -18,10 +18,6 @@ class TestObjects:
         # TODO
         ...
 
-    def test_ignore_matching(self):
-        # TODO
-        ...
-
     def test_apply(self):
         # TODO
         ...

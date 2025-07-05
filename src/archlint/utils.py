@@ -1,7 +1,7 @@
 import re
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Any, Literal, TypeVar
+from typing import Any, Literal
 
 from archlint.regexes import Regex
 
@@ -21,20 +21,10 @@ def get_project_root() -> Path:
     return _dir
 
 
-def walk_absolute_paths():
-    directory = Path("src/datethyme/").resolve()
-    for path in directory.rglob("*.py"):
-        yield path.resolve()
-
-
 def move_path(p: str | Path, old_base: Path, new_base: Path, root: Path) -> Path:
     p = Path(p).absolute()
     p = new_base / p.relative_to(old_base)
     return (new_base / p).relative_to(root)
-
-
-def relativize(p: str | Path, root_dir: Path) -> Path:
-    return move_path(p, root_dir, root_dir, root_dir)
 
 
 # MISCELLANEOUS -------------------------------------------------------------
@@ -48,10 +38,6 @@ def assert_bool(b: bool) -> bool:
     if not isinstance(b, bool):
         raise TypeError(f"Type 'bool' expected; found '{type(b)}'.")
     return b
-
-
-T = TypeVar("T")
-U = TypeVar("U")
 
 
 def project(single: Any, _list: list[tuple] | list[str]) -> list[tuple]:
@@ -83,10 +69,6 @@ def filter_without(string_set: set[str], contained: str | set[str]) -> set[str]:
     if isinstance(contained, str):
         return {s for s in string_set if contained not in s}
     return {s for s in string_set if all(map(lambda c: c not in s, contained))}
-
-
-def anywhere(sset: set[str], substring: str) -> bool:
-    return bool(filter_with(sset, substring))
 
 
 # STRING PROCESSING ----------------------------------------------------------
@@ -140,7 +122,7 @@ def compile_for_path_segment_or_bool(s: str | bool) -> re.Pattern:
 
 
 def get_method_name(s: str) -> str:
-    return safe_search(Regex.NAME_PATTERN, s, 1)
+    return safe_search(Regex.METHOD_NAME, s, 1)
 
 
 def path_matches(p: Path | str, path_pattern: re.Pattern) -> Path | Literal[False]:
@@ -225,11 +207,3 @@ def make_double_bar(s: str = "", colorizer: Callable[[str], str] = Color.no_colo
 
 def make_bar(s: str = "", colorizer: Callable[[str], str] = Color.no_color) -> str:
     return colorizer(f"{s:─^80}")
-
-
-def make_half_bar(s: str = "", colorizer: Callable[[str], str] = Color.no_color) -> str:
-    return colorizer(f"\n{Color.cyan(s) + ' ':-<85}")
-
-
-def indented(strings: Iterable[str], colorizer: Callable[[str], str] = Color.no_color) -> str:
-    return "    " + "\n    ".join(sorted(map(colorizer, strings)))

@@ -88,22 +88,22 @@ def get_method_order_config(raw_config: dict) -> MethodOrderConfig:
     predefined = [
         (regexpr, float(raw_mo_config.get(value, DEFAULT_VALUE)))
         for regexpr, value in (
-            (Regex.INIT, "init"),
-            (Regex.ABSTRACT_DUNDER, "abstract_dunder"),
-            (Regex.ABSTRACT_PROPERTY, "abstract_property"),
-            (Regex.ABSTRACT_PRIVATE_PROPERTY, "abstract_private_property"),
-            (Regex.ABSTRACT_CLASSMETHOD, "abstract_classmethod"),
-            (Regex.ABSTRACT_STATIC, "abstract_static"),
-            (Regex.ABSTRACT_PRIVATE, "abstract_private"),
-            (Regex.DUNDER, "dunder"),
-            (Regex.PRIVATE, "private"),
-            (Regex.MANGLED, "mangled"),
-            (Regex.CLASSMETHOD, "classmethod"),
-            (Regex.PRIVATE_PROPERTY, "private_property"),
-            (Regex.PROPERTY, "property"),
-            (Regex.STATIC, "static"),
-            (Regex.FINAL, "final"),
-            (Regex.ABSTRACT, "abstract"),
+            (Regex.methods.INIT, "init"),
+            (Regex.methods.ABSTRACT_DUNDER, "abstract_dunder"),
+            (Regex.methods.ABSTRACT_PROPERTY, "abstract_property"),
+            (Regex.methods.ABSTRACT_PRIVATE_PROPERTY, "abstract_private_property"),
+            (Regex.methods.ABSTRACT_CLASSMETHOD, "abstract_classmethod"),
+            (Regex.methods.ABSTRACT_STATIC, "abstract_static"),
+            (Regex.methods.ABSTRACT_PRIVATE, "abstract_private"),
+            (Regex.methods.DUNDER, "dunder"),
+            (Regex.methods.PRIVATE, "private"),
+            (Regex.methods.MANGLED, "mangled"),
+            (Regex.methods.CLASSMETHOD, "classmethod"),
+            (Regex.methods.PRIVATE_PROPERTY, "private_property"),
+            (Regex.methods.PROPERTY, "property"),
+            (Regex.methods.STATIC, "static"),
+            (Regex.methods.FINAL, "final"),
+            (Regex.methods.ABSTRACT, "abstract"),
         )
     ]
 
