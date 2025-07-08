@@ -43,7 +43,10 @@ class DocsConfig:
         promoted to thir own .md file."""
 
     file_per_directory: re.Pattern = Regex.MATCH_NOTHING
-    """ Regular expression matching any directories that should be collapsed to a single .md file. """
+    """
+    Regular expression matching any directories that should be collapsed to
+        a single .md file.
+    """
 
     replace_double_underscore: bool = False
     """ Whether """
@@ -101,7 +104,7 @@ class ImportsConfig:
         external_allowed_everywhere: set[str] | None = None,
         allowed: ImportInfo | None = None,
         disallowed: ImportInfo | None = None,
-        grimp_cache: str = "/tmp/grimp_cache"
+        grimp_cache: str = "/tmp/grimp_cache",
     ):
         self.internal_allowed_everywhere = internal_allowed_everywhere or set()
         self.external_allowed_everywhere = external_allowed_everywhere or set()
@@ -119,7 +122,7 @@ class ImportsConfig:
 
         def fix_external(d: dict[str, list[str]], mod_name: str) -> dict[str, set[str]]:
             return {prepend_module_name(k, mod_name): set(v) for k, v in d.items()}
-        
+
         module_name = module_name or default_module_name()
 
         return cls().merge(
@@ -160,8 +163,12 @@ class ImportsConfig:
         disallowed: ImportInfo | None = None,
         grimp_cache: str | None = None,
     ) -> Self:
-        self.internal_allowed_everywhere = internal_allowed_everywhere or self.internal_allowed_everywhere
-        self.external_allowed_everywhere = external_allowed_everywhere or self.external_allowed_everywhere
+        self.internal_allowed_everywhere = (
+            internal_allowed_everywhere or self.internal_allowed_everywhere
+        )
+        self.external_allowed_everywhere = (
+            external_allowed_everywhere or self.external_allowed_everywhere
+        )
         self.allowed = allowed or self.allowed
         self.disallowed = disallowed or self.disallowed
         self.grimp_cache = grimp_cache or self.grimp_cache
@@ -171,9 +178,13 @@ class ImportsConfig:
 
     def _check_conflicts(self) -> None:
         if self.allowed.internal and self.disallowed.internal:
-            raise ValueError("Only one of 'allowed' and 'disallowed' may be specified for internal imports.")
+            raise ValueError(
+                "Only one of 'allowed' and 'disallowed' may be specified for internal imports."
+            )
         if self.allowed.external and self.disallowed.external:
-            raise ValueError("Only one of 'allowed' and 'disallowed' may be specified for external imports.")
+            raise ValueError(
+                "Only one of 'allowed' and 'disallowed' may be specified for external imports."
+            )
 
 
 @dataclass
@@ -214,7 +225,7 @@ class MethodsConfig:
             normal=float(builtins_mapping.get("normal", DEFAULT_VALUE)),
             ordering=tuple(custom + predefined),
         )
-    
+
     def merge(
         self,
         *,
@@ -291,7 +302,7 @@ class Configuration:
     root_dir: Path = field(default_factory=Path.cwd)
     module_name: str = field(default_factory=default_module_name)
     docs: DocsConfig = field(default_factory=DocsConfig)
-    tests: UnitTestsConfig= field(default_factory=UnitTestsConfig)
+    tests: UnitTestsConfig = field(default_factory=UnitTestsConfig)
     imports: ImportsConfig = field(default_factory=ImportsConfig)
     methods: MethodsConfig = field(default_factory=MethodsConfig)
     module_root_dir: Path = field(default_factory=default_module_root_dir)
@@ -326,7 +337,7 @@ class Configuration:
         root_dir: Path | None = None,
         module_name: str | None = None,
         docs: DocsConfig | None = None,
-        tests: UnitTestsConfig| None = None,
+        tests: UnitTestsConfig | None = None,
         imports: ImportsConfig | None = None,
         methods: MethodsConfig | None = None,
         module_root_dir: Path | None = None,

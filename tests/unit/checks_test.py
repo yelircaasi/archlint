@@ -2,7 +2,6 @@ import re
 from pathlib import Path
 from unittest.mock import patch
 
-import grimp
 import pytest
 
 from archlint.checks import (
@@ -701,7 +700,10 @@ def test_check_tests_structure(
 
 
 @pytest.mark.parametrize(
-    "config, module_name, internal_violations, external_violations, contained, not_contained, problems",
+    (
+        "config, module_name, internal_violations, external_violations, "
+        "contained, not_contained, problems"
+    ),
     [
         (
             icfg_base,

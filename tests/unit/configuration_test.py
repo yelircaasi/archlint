@@ -136,11 +136,15 @@ class TestDocsConfig:
 
     def test_from_dict(self):
         default = DocsConfig()
-        from_default_toml = DocsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["docs"])
+        from_default_toml = DocsConfig.from_dict(
+            tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["docs"]
+        )
         assert default == from_default_toml
 
         custom = DocsConfig()  # TODO
-        from_custom_toml = DocsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["docs"])
+        from_custom_toml = DocsConfig.from_dict(
+            tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["docs"]
+        )
         assert custom == from_custom_toml
 
 
@@ -149,11 +153,15 @@ class TestImportsConfig:
 
     def test_from_dict(self):
         default = ImportsConfig()
-        from_default_toml = ImportsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["imports"])
+        from_default_toml = ImportsConfig.from_dict(
+            tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["imports"]
+        )
         assert default == from_default_toml
 
         custom = ImportsConfig()  # TODO
-        from_custom_toml = ImportsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["imports"])
+        from_custom_toml = ImportsConfig.from_dict(
+            tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["imports"]
+        )
         assert custom == from_custom_toml
 
 
@@ -162,11 +170,15 @@ class TestMethodsConfig:
 
     def test_from_dict(self):
         default = MethodsConfig()
-        from_default_toml = MethodsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["methods"])
+        from_default_toml = MethodsConfig.from_dict(
+            tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["methods"]
+        )
         assert default == from_default_toml
 
         custom = MethodsConfig()  # TODO
-        from_custom_toml = MethodsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["methods"])
+        from_custom_toml = MethodsConfig.from_dict(
+            tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["methods"]
+        )
         assert custom == from_custom_toml
 
 
@@ -175,11 +187,15 @@ class TestUnitTestsConfig:
 
     def test_from_dict(self):
         default = UnitTestsConfig()
-        from_default_toml = UnitTestsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["tests"])
+        from_default_toml = UnitTestsConfig.from_dict(
+            tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["tests"]
+        )
         assert default == from_default_toml
 
         custom = UnitTestsConfig()  # TODO
-        from_custom_toml = UnitTestsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["tests"])
+        from_custom_toml = UnitTestsConfig.from_dict(
+            tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["tests"]
+        )
         assert custom == from_custom_toml
 
 

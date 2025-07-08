@@ -3,12 +3,6 @@ import subprocess
 
 from archlint.cli import (
     main,
-    archlint_cli,
-    run_all,
-    docs,
-    imports,
-    methods,
-    tsts,
 )
 
 
@@ -20,30 +14,30 @@ def test_main(capsys):
 
 
 def test_archlint_cli(capsys):
-    result = subprocess.run(["archlint"], capture_output=True).stdout
+    result = subprocess.run(["archlint"], capture_output=True, check=False).stdout
     assert "No problems detected." in result
 
 
 def test_run_all(capsys):
-    result = subprocess.run(["archlint", "all"], capture_output=True).stdout
+    result = subprocess.run(["archlint", "all"], capture_output=True, check=False).stdout
     assert "No problems detected." in result
 
 
 def test_docs(capsys):
-    result = subprocess.run(["archlint", "docs"], capture_output=True).stdout
+    result = subprocess.run(["archlint", "docs"], capture_output=True, check=False).stdout
     assert "No problems detected." in result
 
 
 def test_imports(capsys):
-    result = subprocess.run(["archlint", "imports"], capture_output=True).stdout
+    result = subprocess.run(["archlint", "imports"], capture_output=True, check=False).stdout
     assert "No problems detected." in result
 
 
 def test_methods(capsys):
-    result = subprocess.run(["archlint", "methods"], capture_output=True).stdout
+    result = subprocess.run(["archlint", "methods"], capture_output=True, check=False).stdout
     assert "No problems detected." in result
 
 
 def test_tests(capsys):
-    result = subprocess.run(["archlint", "tests"], capture_output=True).stdout
+    result = subprocess.run(["archlint", "tests"], capture_output=True, check=False).stdout
     assert "No problems detected." in result

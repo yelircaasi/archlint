@@ -40,12 +40,12 @@ ext_graph = grimp.build_graph(
     cache_dir="/tmp/grimp_cache",
 )
 icfg1 = ImportsConfig(
-        internal_allowed_everywhere={""},
-        external_allowed_everywhere={""},
-        allowed=ImportInfo(internal={}, external={"archlint.utils": {"typing"}}),
-        disallowed=ImportInfo(internal={"archlint.collection": {"archlint.utils"}}, external={}),
-        grimp_cache="",
-    )
+    internal_allowed_everywhere={""},
+    external_allowed_everywhere={""},
+    allowed=ImportInfo(internal={}, external={"archlint.utils": {"typing"}}),
+    disallowed=ImportInfo(internal={"archlint.collection": {"archlint.utils"}}, external={}),
+    grimp_cache="",
+)
 cfg1 = Configuration(
     root_dir=Path("/home/frodo/projects/ring"),
     module_name="hello_world",
@@ -324,10 +324,18 @@ def test_make_doc_function_path(
 @pytest.mark.parametrize(
     "config, pre, post",
     [
-        (cfg1, "src/hello_world/submodule/file.py:001:greet", "tests/unit_tests/submodule/file_test.py:001:test_greet"),
+        (
+            cfg1,
+            "src/hello_world/submodule/file.py:001:greet",
+            "tests/unit_tests/submodule/file_test.py:001:test_greet",
+        ),
         (cfg1, "src/hello_world/_file.py:001:Greeting", ""),
         (cfg1, "src/hello_world/path/file_.py:001:UpperNoDot", ""),
-        (cfg1, "src/hello_world/__hello.py:999:__mangled", "tests/unit_tests/_hello_test.py:999:test_mangled"),
+        (
+            cfg1,
+            "src/hello_world/__hello.py:999:__mangled",
+            "tests/unit_tests/_hello_test.py:999:test_mangled",
+        ),
     ],
 )
 def test_map_to_test(config: Configuration, pre: str, post: str):
@@ -376,7 +384,12 @@ def test_compute_disallowed(
     ],
     ids=["internal_violation"],
 )
-def test_get_disallowed_imports(config: ImportsConfig, module_name: str, disallowed_internal: dict[str, set[str]], disallowed_external: dict[str, set[str]]):
+def test_get_disallowed_imports(
+    config: ImportsConfig,
+    module_name: str,
+    disallowed_internal: dict[str, set[str]],
+    disallowed_external: dict[str, set[str]],
+):
     violations_internal, violations_external = get_disallowed_imports(config, module_name)
     assert violations_internal == disallowed_internal
     assert violations_external == disallowed_external
@@ -397,13 +410,15 @@ def test_get_disallowed_imports(config: ImportsConfig, module_name: str, disallo
             ),
         ),
         (
-            {"method_a": "def method_a()", "method_b": "def method_b()", "normal": "def normal(): ..."},
+            {
+                "method_a": "def method_a()",
+                "method_b": "def method_b()",
+                "normal": "def normal(): ...",
+            },
             ["method_a", "method_b", "normal"],
             MethodsConfig(
                 normal=6.66,
-                ordering=(
-                    (re.compile(r"method_"), 0.0),
-                ),
+                ordering=((re.compile(r"method_"), 0.0),),
             ),
         ),
     ],
@@ -420,7 +435,7 @@ def test_sort_methods(method_dict: dict[str, str], post: list[str], methods_cfg:
         (["a", "c"], ["a", "b", "c"], re.compile(r"additional"), [], ["b"], {"a", "c"}),
         (["a", "c"], ["a", "b"], re.compile(r"additional"), ["c"], ["b"], {"a"}),
     ],
-    ids=["0", "1", "2", "3"]
+    ids=["0", "1", "2", "3"],
 )
 def test_analyze_discrepancies(
     expected: list[str],

@@ -5,7 +5,7 @@ Top-level functions performing each check end-to-end.
 from functools import partial
 
 from archlint.logic import sort_methods
-from archlint.utils import deduplicate_ordered, make_double_bar, sort_on_path
+from archlint.utils import deduplicate_ordered, sort_on_path
 
 from .collection import Objects
 from .configuration import Configuration, ImportsConfig

@@ -29,7 +29,7 @@ def default_module_root_dir() -> Path:
 
 
 def default_module_name() -> str:
-    return default_module_root_dir().name    
+    return default_module_root_dir().name
 
 
 def move_path(p: str | Path, old_base: Path, new_base: Path) -> Path:

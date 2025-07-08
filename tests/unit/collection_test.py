@@ -137,7 +137,6 @@ def test_collect_method_info():
     assert len(method_dict) == 3
     assert super_classes == []
 
-    # class with inheritance
     class_text_with_inheritance = """class AdminUser(User, BaseModel):
     def ban_user(self):
         pass"""
@@ -149,7 +148,6 @@ def test_collect_method_info():
     assert "ban_user" in method_names
     assert set(super_classes) == {"User", "BaseModel"}
 
-    # class with decorators
     class_text_with_decorators = """class Service:
     @property
     def status(self):
@@ -174,7 +172,6 @@ def test_parse_function():
     result = parse_function(func_text)
     assert result == "test_function"
 
-    # function with decorators
     func_text_with_decorator = """@property
 def get_value(self):
     return self._value"""
@@ -182,7 +179,6 @@ def get_value(self):
     result = parse_function(func_text_with_decorator)
     assert result == "get_value"
 
-    # with complex function signature
     func_text_complex = """def complex_function(
         arg1: str,
         arg2: int = 10,
@@ -284,19 +280,18 @@ def function2():
 class DataClass:
     name: str
 
-    
 
 class TestClass:
     def test_method(self):
         pass
 
-        
+
 class CoolClass2():
 
     def method_extraordinaire(self) -> str:
         ...
 
-        
+
 def last_function():
     ...
 
@@ -326,20 +321,20 @@ def test_collect_source_objects():
 class TestClass:
     def test_method(self):
         pass
-        
+
 
 @
 
 
 # comment
 
-        
+
 class Test2():
 
     def method_extraordinaire(self) -> str:
         ...
 
-        
+
 def last_function():
     ...
 
@@ -391,7 +386,6 @@ def test_add_inherited_methods():
     assert "child_method" in grandchild_class[3]
     assert "grand_method" in grandchild_class[3]
 
-    # multiple inheritance
     class_tuples_multi = [
         (Path("a.py"), 0, "ClassA", ["method_a"], {}, []),
         (Path("b.py"), 1, "ClassB", ["method_b"], {}, []),
@@ -405,7 +399,6 @@ def test_add_inherited_methods():
     assert "method_b" in class_c[3]
     assert "method_c" in class_c[3]
 
-    # no inheritance
     class_tuples_no_inherit = [(Path("standalone.py"), 0, "Standalone", ["solo_method"], {}, [])]
 
     result = add_inherited_methods(class_tuples_no_inherit)
@@ -416,14 +409,12 @@ def test_add_inherited_methods():
 
 
 def test_objects_edge_cases():
-    # Test with empty inputs
     empty_objects = Objects(functions=[], classes=[])
     assert empty_objects.function_strings == []
     assert empty_objects.method_strings == []
     assert empty_objects.strings == []
     assert empty_objects.methodless == []
 
-    # Test apply with empty processor result
     def empty_processor(s):
         return ""
 
@@ -431,13 +422,11 @@ def test_objects_edge_cases():
 
 
 def test_collect_method_info_edge_cases():
-    # empty class
     empty_class = "class Empty:\n    pass"
     result = collect_method_info(empty_class)
     assert result[0] == "Empty"
     assert result[1] == []
 
-    # malformed class
     malformed_class = "class"
     result = collect_method_info(malformed_class)
     assert isinstance(result, tuple)
@@ -445,11 +434,9 @@ def test_collect_method_info_edge_cases():
 
 
 def test_parse_function_edge_cases():
-    # non-function text
     non_function = "not a function"
     result = parse_function(non_function)
     assert result is None or result == ""
 
-    # empty string
     result = parse_function("")
     assert result is None or result == ""

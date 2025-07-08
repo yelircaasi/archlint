@@ -3,13 +3,8 @@ import re
 from click.testing import CliRunner
 
 from archlint.cli import (
-    main,
     archlint_cli,
-    run_all,
-    docs,
-    imports,
-    methods,
-    tsts,
+    main,
 )
 
 

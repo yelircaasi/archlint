@@ -211,7 +211,9 @@ def analyze_discrepancies(
     expected_set = set(expected := list(map(remove_ordering_index, expected)))
 
     missing: list[str] = [t for t in expected if t not in actual_set]
-    unexpected: list[str] = [] if (allow_additional is True) else [t for t in actual if t not in expected_set]
+    unexpected: list[str] = (
+        [] if (allow_additional is True) else [t for t in actual if t not in expected_set]
+    )
     overlap = actual_set.intersection(expected_set)
 
     return missing, unexpected, overlap
