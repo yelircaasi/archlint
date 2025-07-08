@@ -109,9 +109,7 @@ def map_to_test(s: str, cfg: Configuration) -> str:
         return ""
     else:
         result = make_test_function_path(path_, i, ob, cfg.tests.file_per_directory)
-    if not cfg.tests.replace_double_underscore:
-        return dedup_underscores(result)
-    return result
+    return dedup_underscores(result) if cfg.tests.replace_double_underscore else result
 
 
 def map_to_doc(s: str, cfg: Configuration) -> str:
@@ -124,9 +122,7 @@ def map_to_doc(s: str, cfg: Configuration) -> str:
         )
     else:
         result = make_doc_function_path(path_, i, ob, cfg.docs.file_per_directory)
-    if not cfg.docs.replace_double_underscore:
-        return dedup_underscores(result)
-    return result
+    return dedup_underscores(result) if cfg.docs.replace_double_underscore else result
 
 
 def compute_disallowed(

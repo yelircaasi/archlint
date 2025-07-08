@@ -23,14 +23,11 @@ from .reporting import (
 
 
 def check_method_order(cfg: Configuration, source_objects: Objects) -> tuple[str, bool]:
-    make_double_bar(" METHOD ORDER ")
-
     out_of_order = []
     classes = source_objects.classes
 
     for path, _, classname, methods, method_dict, __ in classes:
-        sorted_methods = sort_methods(method_dict, cfg.methods)
-        if methods != sorted_methods:
+        if methods != (sorted_methods := sort_methods(method_dict, cfg.methods)):
             out_of_order.append((path, classname, methods, sorted_methods))
 
     return make_methods_report(out_of_order), bool(out_of_order)

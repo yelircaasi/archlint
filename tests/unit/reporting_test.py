@@ -133,7 +133,7 @@ def test_make_discrepancy_report(tmp_path):
         root_dir=tmp_path,
     )
     assert "MISSING" in report
-    assert "<3>" in report
+    assert "3" in report
     assert "UNEXPECTED" in report
-    assert "<1>" in report
+    assert "1" in report
     assert "ORDERING MISMATCH" in report

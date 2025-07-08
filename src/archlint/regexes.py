@@ -34,7 +34,7 @@ class Regex:
     OBJECT_TEXT = re.compile(
         (
             r"class [A-Za-z_][^\n]+:.+?\n\n\n|class [A-Za-z_][^\n]+:.+?$"
-            r"|(?<=\n)def [^\n]+\(|^def [^\n]+\("
+            r"|(?<=\n)@|(?<=\n)def [^\n]+\(|^def [^\n]+\("
         ),
         re.DOTALL,
     )

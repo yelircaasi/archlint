@@ -18,7 +18,7 @@ from archlint.configuration import (
     ImportInfo,
     ImportsConfig,
     MethodsConfig,
-    TestsConfig,
+    TstsConfig,
 )
 
 icfg_base = ImportsConfig(
@@ -45,11 +45,11 @@ cfg_base = Configuration(
         normal=9.0,
         ordering=(
             (re.compile(r"put_me_first"), 0.0),
-            (re.compile(r"middle"), 1.0),
+            (re.compile(r"__init__"), 1.0),
             (re.compile(r"put_me_last"), 2.0),
         ),
     ),
-    tests=TestsConfig(
+    tests=TstsConfig(
         unit_dir=Path(""),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
@@ -81,7 +81,7 @@ cfg_alt = Configuration(
             (re.compile(r"put_me_last"), 2.0),
         ),
     ),
-    tests=TestsConfig(
+    tests=TstsConfig(
         unit_dir=Path(""),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
@@ -124,11 +124,19 @@ functions_unexpected_docs = [
 functions_unexpected_tests = [
     (Path("tests/unit_tests/submodule"), 1, "func1"),
     (Path("tests/unit_tests/submodule"), 1, "func_unmatched"),
+    (Path("tests/unit_tests/submodule"), 1, "function3"),
+]
+functions_mixed_tests = [
+    (Path("tests/unit_tests/submodule"), 1, "func1"),
+    (Path("tests/unit_tests/submodule"), 1, "func_unmatched"),
     (Path("tests/unit_tests/submodule"), 1, "func_2"),
     (Path("tests/unit_tests/submodule"), 1, "function3"),
 ]
-functions_mixed_tests = []
-functions_mixed_docs = []
+functions_mixed_docs = [
+    (Path("src/module/submodule"), 1, "func1"),
+    (Path("src/module/submodule"), 1, "func_unmatched"),
+    (Path("src/module/submodule"), 1, "function3"),
+]
 classes_baseline = [
     (
         Path("src/module/submodule"),
@@ -317,7 +325,45 @@ classes_missing_tests = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_unexpected_docs = []
+classes_unexpected_docs = [
+    (
+        Path("docs/markdown/submodule"),
+        1,
+        "func_unmatched",
+        ["method_a", "method_b", "method_c"],
+        {
+            "method_a": "@property\n    def method_a(self):\n        ",
+            "method_b": "@abstractmethod\n    def method_b(self): ...\n        ",
+            "method_c": "def method_c(self):\n        print()",
+        },
+        ["inherited_a", "inherited_b"],
+    ),
+    (
+        Path("docs/markdown/submodule"),
+        1,
+        "ClassA",
+        ["method_a", "method_b", "method_c"],
+        {
+            "method_a": "@property\n    def method_a(self):\n        ",
+            "method_b": "@abstractmethod\n    def method_b(self): ...\n        ",
+            "method_c": "def method_c(self):\n        print()",
+        },
+        ["inherited_a", "inherited_b"],
+    ),
+    (
+        Path("docs/markdown/submodule"),
+        1,
+        "ClassB",
+        ["method_a", "method_b", "method_c"],
+        {
+            "method_a": "@property\n    def method_a(self):\n        ",
+            "method_b": "@abstractmethod\n    def method_b(self): ...\n        ",
+            "method_c": "def method_c(self):\n        print()",
+            "method_d": "def method_d(self):\n        print()",
+        },
+        ["inherited_a", "inherited_b"],
+    ),
+]
 classes_unexpected_tests = [
     (
         Path("tests/unit_tests/submodule"),
@@ -438,11 +484,11 @@ classes_out_of_order = [
         Path("src/model.py"),
         0,
         "User",
-        ["public_method", "__init__", "private_method"],
+        ["private_method", "__init__", "put_me_first"],
         {
             "private_method": "def _private_method(self):",
             "__init__": "def __init__(self):",
-            "public_method": "def public_method(self):",
+            "put_me_first": "def put_me_first(self):",
         },
         [],
     )
@@ -465,7 +511,7 @@ mixed_output = [
 
 
 @pytest.mark.parametrize(
-    "cfg, source_objects, contained, not_contained",
+    "cfg, source_objects, contained, not_contained, problems",
     [
         (
             cfg_base,
@@ -475,6 +521,7 @@ mixed_output = [
             ),
             [],
             ["public_method"],
+            False,
         ),
         (
             cfg_base,
@@ -482,8 +529,9 @@ mixed_output = [
                 functions=[],
                 classes=classes_out_of_order,
             ),
-            ["public_method"],
+            ["__init__", "put_me_first"],
             [],
+            True,
         ),
         # (
         #     cfg_base,
@@ -524,6 +572,7 @@ def test_check_method_order(
             Objects(functions=functions_baseline_tests, classes=classes_baseline_tests),
             match_output,
             mixed_output,
+            False,
         ),
         (
             cfg_base,
@@ -531,6 +580,7 @@ def test_check_method_order(
             Objects(functions=functions_missing_tests, classes=classes_missing_tests),
             missing_output,
             unexpected_output + match_output,
+            True,
         ),
         (
             cfg_base,
@@ -538,6 +588,7 @@ def test_check_method_order(
             Objects(functions=functions_unexpected_tests, classes=classes_unexpected_tests),
             unexpected_output,
             missing_output + match_output,
+            True,
         ),
         (
             cfg_base,
@@ -545,6 +596,7 @@ def test_check_method_order(
             Objects(functions=functions_mixed_tests, classes=classes_mixed_tests),
             mixed_output,
             match_output,
+            True,
         ),
         (
             cfg_alt,
@@ -552,6 +604,7 @@ def test_check_method_order(
             Objects(functions=functions_mixed_tests, classes=classes_mixed_tests),
             match_output,
             mixed_output,
+            False,
         ),
     ],
     ids=[
@@ -587,6 +640,7 @@ def test_check_docs_structure(
             Objects(functions=functions_baseline_docs, classes=classes_baseline_docs),
             match_output,
             mixed_output,
+            False,
         ),
         (
             cfg_base,
@@ -594,6 +648,7 @@ def test_check_docs_structure(
             Objects(functions=functions_missing_docs, classes=classes_missing_docs),
             missing_output,
             unexpected_output + match_output,
+            True,
         ),
         (
             cfg_base,
@@ -601,6 +656,7 @@ def test_check_docs_structure(
             Objects(functions=functions_unexpected_docs, classes=classes_unexpected_docs),
             unexpected_output,
             missing_output + match_output,
+            True,
         ),
         (
             cfg_base,
@@ -608,6 +664,7 @@ def test_check_docs_structure(
             Objects(functions=functions_mixed_docs, classes=classes_mixed_docs),
             mixed_output,
             match_output,
+            True,
         ),
         (
             cfg_alt,
@@ -615,6 +672,7 @@ def test_check_docs_structure(
             Objects(functions=functions_mixed_docs, classes=classes_mixed_docs),
             match_output,
             mixed_output,
+            False,
         ),
     ],
     ids=[
@@ -697,7 +755,7 @@ def test_check_imports(
     not_contained: list[str | re.Pattern],
     problems: bool,
 ):
-    with patch("archlint.collection.get_disallowed_imports") as mock_collector:
+    with patch("archlint.logic.get_disallowed_imports") as mock_collector:
         mock_collector.return_value = (internal_violations, external_violations)
 
         result, result_problems = check_imports(config, module_name)

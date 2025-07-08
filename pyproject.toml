@@ -131,7 +131,7 @@ exclude = [
 [tool.pytest.ini_options]
 cache_dir = ".cache/pytest_cache"
 testpaths = ["tests", "scripts/"]
-addopts = "--ignore=_data"
+addopts = "--ignore=_data,src"
 markers = [
     "pure: no IO or side effects (refers to the test itself)",
     "read: requires a read operation",

@@ -5,7 +5,7 @@ from archlint.configuration import (
     DocsConfig,
     ImportsConfig,
     MethodsConfig,
-    TestsConfig,
+    TstsConfig,
     get_config,
     get_docs_config,
     get_imports_config,
@@ -171,7 +171,7 @@ def test_get_tests_config():
     from_default_toml = get_tests_config(tomllib.loads(DEFAULT_TOML)["archlint"]["tests"])
     assert default == from_default_toml
 
-    custom = TestsConfig()  # TODO
+    custom = TstsConfig()  # TODO
     from_custom_toml = get_tests_config(tomllib.loads(CUSTOM_TOML)["archlint"]["tests"])
     assert custom == from_custom_toml
 

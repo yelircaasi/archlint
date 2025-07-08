@@ -284,6 +284,24 @@ def function2():
 class DataClass:
     name: str
 
+    
+
+class TestClass:
+    def test_method(self):
+        pass
+
+        
+class CoolClass2():
+
+    def method_extraordinaire(self) -> str:
+        ...
+
+        
+def last_function():
+    ...
+
+
+
 """
 
     result = collect_object_texts(source_code)
@@ -304,9 +322,28 @@ def test_collect_source_objects():
         mock_read_text.return_value = """def test_function():
     pass
 
+
 class TestClass:
     def test_method(self):
         pass
+        
+
+@
+
+
+# comment
+
+        
+class Test2():
+
+    def method_extraordinaire(self) -> str:
+        ...
+
+        
+def last_function():
+    ...
+
+
 """
         mock_rglob.return_value = [mock_file]
         mock_relative_to.return_value = Path("src/test.py")
@@ -314,23 +351,23 @@ class TestClass:
         src_dir = Path("src")
         root_dir = Path(".")
 
-        with (
-            patch("your_module.collect_object_texts") as mock_collect_texts,
-            patch("your_module.collect_method_info") as mock_collect_methods,
-            patch("your_module.parse_function") as mock_parse_func,
-        ):
-            mock_collect_texts.return_value = [
-                "def test_function():\n    pass",
-                "class TestClass:\n    def test_method(self):\n        pass",
-            ]
-            mock_collect_methods.return_value = ("TestClass", ["test_method"], {}, [])
-            mock_parse_func.return_value = "test_function"
+        # with (
+        #     patch("your_module.collect_object_texts") as mock_collect_texts,
+        #     patch("your_module.collect_method_info") as mock_collect_methods,
+        #     patch("your_module.parse_function") as mock_parse_func,
+        # ):
+        #     mock_collect_texts.return_value = [
+        #         "def test_function():\n    pass",
+        #         "class TestClass:\n    def test_method(self):\n        pass",
+        #     ]
+        #     mock_collect_methods.return_value = ("TestClass", ["test_method"], {}, [])
+        #     mock_parse_func.return_value = "test_function"
 
-            result = collect_source_objects(src_dir, root_dir)
+        result = collect_source_objects(src_dir, root_dir)
 
-            assert isinstance(result, Objects)
-            assert len(result.functions) >= 0
-            assert len(result.classes) >= 0
+        assert isinstance(result, Objects)
+        assert len(result.functions) >= 0
+        assert len(result.classes) >= 0
 
 
 def test_add_inherited_methods():

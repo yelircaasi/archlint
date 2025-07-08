@@ -10,7 +10,7 @@ from archlint.configuration import (
     ImportInfo,
     ImportsConfig,
     MethodsConfig,
-    TestsConfig,
+    TstsConfig,
 )
 from archlint.logic import (
     analyze_discrepancies,
@@ -29,82 +29,88 @@ from archlint.logic import (
     sort_methods,
 )
 
-cfg1 = (
-    Configuration(
-        root_dir=Path(""),
-        module_name="",
-        module_root_dir=Path(""),
-        docs=DocsConfig(
-            allow_additional=re.compile(r""),
-            file_per_directory=re.compile(r""),
-            file_per_class=re.compile(r""),
-            ignore=re.compile(r""),
-            replace_double_underscore=False,
-            md_dir=Path(""),
-        ),
-        imports=ImportsConfig(
-            internal_allowed_everywhere={""},
-            external_allowed_everywhere={""},
-            allowed=ImportInfo(internal={}, external={}),
-            disallowed=ImportInfo(internal={}, external={}),
-            grimp_cache="",
-        ),
-        methods=MethodsConfig(
-            normal=9.0,
-            ordering=(
-                (re.compile(r""), 0.0),
-                (re.compile(r""), 1.0),
-            ),
-        ),
-        tests=TestsConfig(
-            unit_dir=Path(""),
-            allow_additional=re.compile(r""),
-            ignore=re.compile(r""),
-            file_per_class=re.compile(r""),
-            file_per_directory=re.compile(r""),
-            function_per_class=re.compile(r""),
-            replace_double_underscore=False,
-            use_filename_suffix=False,
+int_graph = grimp.build_graph(
+    "grimp",
+    include_external_packages=False,
+    cache_dir="/tmp/grimp_cache",
+)
+ext_graph = grimp.build_graph(
+    "grimp",
+    include_external_packages=True,
+    cache_dir="/tmp/grimp_cache",
+)
+cfg1 = Configuration(
+    root_dir=Path("/home/frodo/projects/ring"),
+    module_name="hello_world",
+    module_root_dir=Path("/home/frodo/projects/ring/src/hello_world"),
+    docs=DocsConfig(
+        allow_additional=re.compile(r""),
+        file_per_directory=re.compile(r"collapse_me"),
+        file_per_class=re.compile(r"expand_me"),
+        ignore=re.compile(r""),
+        replace_double_underscore=True,
+        md_dir=Path(""),
+    ),
+    imports=ImportsConfig(
+        internal_allowed_everywhere={""},
+        external_allowed_everywhere={""},
+        allowed=ImportInfo(internal={}, external={}),
+        disallowed=ImportInfo(internal={}, external={}),
+        grimp_cache="",
+    ),
+    methods=MethodsConfig(
+        normal=9.0,
+        ordering=(
+            (re.compile(r""), 0.0),
+            (re.compile(r""), 1.0),
         ),
     ),
+    tests=TstsConfig(
+        unit_dir=Path(""),
+        allow_additional=re.compile(r""),
+        ignore=re.compile(r""),
+        file_per_class=re.compile(r"expand_me"),
+        file_per_directory=re.compile(r"collapse_me"),
+        function_per_class=re.compile(r""),
+        replace_double_underscore=True,
+        use_filename_suffix=False,
+    ),
 )
-cfg2 = (
-    Configuration(
-        root_dir=Path(""),
-        module_name="",
-        module_root_dir=Path(""),
-        docs=DocsConfig(
-            allow_additional=re.compile(r""),
-            file_per_directory=re.compile(r""),
-            file_per_class=re.compile(r""),
-            ignore=re.compile(r""),
-            replace_double_underscore=False,
-            md_dir=Path(""),
+cfg2 = Configuration(
+    root_dir=Path(""),
+    module_name="",
+    module_root_dir=Path(""),
+    docs=DocsConfig(
+        allow_additional=re.compile(r""),
+        file_per_directory=re.compile(r""),
+        file_per_class=re.compile(r""),
+        ignore=re.compile(r""),
+        replace_double_underscore=False,
+        md_dir=Path(""),
+    ),
+    imports=ImportsConfig(
+        internal_allowed_everywhere={""},
+        external_allowed_everywhere={""},
+        allowed=ImportInfo(internal={}, external={}),
+        disallowed=ImportInfo(internal={}, external={}),
+        grimp_cache="",
+    ),
+    methods=MethodsConfig(
+        normal=9.0,
+        ordering=(
+            (re.compile(r""), 0.0),
+            (re.compile(r""), 1.0),
         ),
-        imports=ImportsConfig(
-            internal_allowed_everywhere={""},
-            external_allowed_everywhere={""},
-            allowed=ImportInfo(internal={}, external={}),
-            disallowed=ImportInfo(internal={}, external={}),
-            grimp_cache="",
-        ),
-        methods=MethodsConfig(
-            normal=9.0,
-            ordering=(
-                (re.compile(r""), 0.0),
-                (re.compile(r""), 1.0),
-            ),
-        ),
-        tests=TestsConfig(
-            unit_dir=Path(""),
-            allow_additional=re.compile(r""),
-            ignore=re.compile(r""),
-            file_per_class=re.compile(r""),
-            file_per_directory=re.compile(r""),
-            function_per_class=re.compile(r""),
-            replace_double_underscore=False,
-            use_filename_suffix=False,
-        ),
+    ),
+    tests=TstsConfig(
+        unit_dir=Path(""),
+        allow_additional=re.compile(r""),
+        ignore=re.compile(r""),
+        file_per_class=re.compile(r""),
+        file_per_directory=re.compile(r""),
+        function_per_class=re.compile(r""),
+        replace_double_underscore=False,
+        use_filename_suffix=False,
     ),
 )
 icfg1 = ImportsConfig(
@@ -186,30 +192,30 @@ def test_make_doc_filename(pre: Path, post: Path):
     "path, idx, class_name, method, file_per_class, file_per_directory, expected",
     [
         (
-            Path("/some/path/to/file.py"),
+            Path("/some/expand_me/to/file.py"),
             "1",
             "CoolClass",
             "cool_method",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
-            "/some/path/to/file_test.py:001:TestCoolClass.test_cool_method",
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
+            "/some/expand_me/to/file_test.py:001:TestCoolClass.test_cool_method",
+        ),
+        (
+            Path("/some/path/collapse_me/file.py"),
+            "1",
+            "CoolClass",
+            "cool_method",
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
+            "/some/path/collapse_me.py:001:TestCoolClass.test_cool_method",
         ),
         (
             Path("/some/path/to/file.py"),
             "1",
             "CoolClass",
             "cool_method",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
-            "/some/path/to/file_test.py:001:TestCoolClass.test_cool_method",
-        ),
-        (
-            Path("/some/path/to/file.py"),
-            "1",
-            "CoolClass",
-            "cool_method",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
             "/some/path/to/file_test.py:001:TestCoolClass.test_cool_method",
         ),
     ],
@@ -233,27 +239,27 @@ def test_make_test_method_path(
     "path, idx, klass, file_per_class, file_per_directory, expected",
     [
         (
-            Path("some/path/to/file.py"),
+            Path("some/expand_me/to/file.py"),
             "1",
             "CoolClass",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
-            "some/path/to/file.md:001:CoolClass",
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
+            "some/expand_me/to/file/coolclass.md:001:CoolClass",
         ),
         (
             Path("/some/path/to/file.py"),
             "2",
             "CoolClass",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
-            "some/path/to/file.md:002:CoolClass",
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
+            "some/path/collapse_me.md:002:CoolClass",
         ),
         (
             Path("/some/path/to/file.py"),
             "42",
             "CoolClass",
-            re.compile(r"some_string"),
-            re.compile(r"some_string"),
+            re.compile(r"expand_me"),
+            re.compile(r"collapse_me"),
             "some/path/to/file.md:034:CoolClass",
         ),
     ],
@@ -303,10 +309,10 @@ def test_make_doc_function_path(
 @pytest.mark.parametrize(
     "config, pre, post",
     [
-        (cfg1, "", ""),
-        (cfg1, "", ""),
-        (cfg1, "", ""),
-        (cfg1, "", ""),
+        (cfg1, "path/file.py:001:greet", "path/file_test.py:001:test_greet"),
+        (cfg1, "src/hello_world/_file.py:001:Greeting", ""),
+        (cfg2, "path/file_.py:001:UpperNoDot", ""),
+        (cfg2, "_:999:__mangled", "_:999:test___mangled"),
     ],
 )
 def test_map_to_test(config: Configuration, pre: str, post: str):
@@ -316,9 +322,10 @@ def test_map_to_test(config: Configuration, pre: str, post: str):
 @pytest.mark.parametrize(
     "config, pre, post",
     [
-        (cfg1, "", ""),
-        (cfg2, "", ""),
-        (cfg2, "", ""),
+        (cfg1, "path/file.py:001:greet", "path/file.md:001:greet"),
+        (cfg2, "path/file.py:001:Greet.greeter", "path/file.md:001:Greet.greeter"),
+        (cfg2, "path/file_.py:001:_private", "path/file_test.py:001:test_private"),
+        (cfg2, "_:999:__mangled", "_:999:test___mangled"),
     ],
 )
 def test_map_to_doc(config: Configuration, pre: str, post: str):
@@ -328,8 +335,8 @@ def test_map_to_doc(config: Configuration, pre: str, post: str):
 @pytest.mark.parametrize(
     "allowed, disallowed, allowed_everywhere, graph, expected",
     [
-        ({}, {}, {""}, "TODO", {}),
-        ({}, {}, {""}, "TODO", {}),
+        ({"mod1": {"import1"}}, {}, {"allow_me"}, int_graph, {}),
+        ({}, {"mod1": {"import1"}, "grimp": {"sys"}}, {"allow_me"}, ext_graph, {}),
         ({}, {}, {""}, "TODO", {}),
     ],
 )

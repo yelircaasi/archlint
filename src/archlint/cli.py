@@ -93,9 +93,9 @@ def methods(ctx: click.Context) -> bool:
     return problems
 
 
-@archlint_cli.command(help="Check test organization and conventions.")
+@archlint_cli.command(name="tests", help="Check test organization and conventions.")
 @click.pass_context
-def tests(ctx: click.Context) -> bool:
+def tsts(ctx: click.Context) -> bool:
     cfg: Configuration = ctx.obj["CFG"]
     source_objects = collect_source_objects(cfg.module_root_dir, cfg.root_dir)
     tests_objects = collect_source_objects(cfg.tests.unit_dir, cfg.root_dir)

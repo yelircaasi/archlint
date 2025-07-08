@@ -118,12 +118,12 @@ def collect_source_objects(src_dir: Path, root_dir: Path) -> Objects:
     for _p in sorted(src_dir.rglob("*.py")):
         p = _p.relative_to(root_dir)
         for i, text in enumerate(collect_object_texts(_p.read_text())):
-            if text.startswith(("@dataclass", "class ")):
-                if class_tuple := collect_method_info(text):
-                    classes.append((p, i, *class_tuple))
-            elif text.startswith(("@", "def ")):
-                if func_name := parse_function(text):
-                    functions.append((p, i, func_name))
+            if text.startswith(("@dataclass", "class ")) and (
+                class_tuple := collect_method_info(text)
+            ):
+                classes.append((p, i, *class_tuple))
+            elif text.startswith(("@", "def ")) and (func_name := parse_function(text)):
+                functions.append((p, i, func_name))
 
     return Objects(functions=functions, classes=classes)
 

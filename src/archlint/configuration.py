@@ -66,7 +66,7 @@ class MethodsConfig:
 
 
 @dataclass
-class TestsConfig:
+class TstsConfig:
     allow_additional: re.Pattern
     ignore: re.Pattern
     file_per_class: re.Pattern
@@ -82,7 +82,7 @@ class Configuration:
     root_dir: Path
     module_name: str
     docs: DocsConfig
-    tests: TestsConfig
+    tests: TstsConfig
     imports: ImportsConfig
     methods: MethodsConfig
     module_root_dir: Path
@@ -180,7 +180,7 @@ def get_methods_config(pyproject_methods_config: dict) -> MethodsConfig:
     )
 
 
-def get_tests_config(pyproject_archlint_tests: dict) -> TestsConfig:
+def get_tests_config(pyproject_archlint_tests: dict) -> TstsConfig:
     DEFAULTS = {
         "unit_dir": "tests/unit",
         "allow_additional": False,
@@ -192,7 +192,7 @@ def get_tests_config(pyproject_archlint_tests: dict) -> TestsConfig:
         "use_filename_suffix": True,
     }
     raw = DEFAULTS | pyproject_archlint_tests
-    return TestsConfig(
+    return TstsConfig(
         unit_dir=Path(raw["unit_dir"]).absolute(),
         allow_additional=compile_string_or_bool(raw["allow_additional"]),
         ignore=compile_for_path_segment(raw["ignore"]),

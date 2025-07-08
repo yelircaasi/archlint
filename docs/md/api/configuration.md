@@ -60,7 +60,7 @@
         show_root_heading: true
         show_source: false
 
-### ::: archlint.configuration.TestsConfig
+### ::: archlint.configuration.TstsConfig
     handler: python
     options:
         members:
