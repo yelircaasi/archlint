@@ -10,27 +10,44 @@ from typing import Literal
 from archlint.regexes import Regex
 
 # PATH -----------------------------------------------------------------------
-THIS_FILE = Path(__file__)
 
 
 def get_project_root() -> Path:
-    attempts, max_attempts = 0, 20
     _dir = Path.cwd()
 
     while not (_dir / "pyproject.toml").exists():
-        _dir = (THIS_FILE if _dir == Path("/") else _dir).parent
+        _dir = _dir.parent
 
-        if (attempts := attempts + 1) > max_attempts:
+        if _dir == Path("/"):
             raise FileNotFoundError("Directory root containing 'pyproject.toml' not found.")
 
     return _dir
 
 
-def move_path(p: str | Path, old_base: Path, new_base: Path, root: Path) -> Path:
-    p = Path(p)
-    p = root / p if not p.is_relative_to(root) else p
-    p = new_base / Path(p).relative_to(old_base)
-    return (new_base / p).relative_to(root)
+def default_module_root_dir() -> str:
+    return next((Path.cwd() / "src").iterdir())
+
+
+def default_module_name() -> Path:
+    return default_module_root_dir().name    
+
+
+def move_path(p: str | Path, old_base: Path, new_base: Path) -> Path:
+    def join_on_common(path1: Path, path2: Path) -> Path | None:
+        parts_base, parts_rel = path1.parts, path2.parts
+        max_len = min(len(parts_base), len(parts_rel))
+        for i in range(max_len):
+            if parts_base[-i:] == parts_rel[:i]:
+                return Path(*parts_base, *parts_rel[i:])
+        return None
+
+    if not (p := Path(p)).is_absolute():
+        p = join_on_common(old_base, p) or p
+    if p.is_relative_to(old_base):
+        p = p.relative_to(old_base)
+    elif p.is_absolute():
+        raise ValueError(f"{p} should be relative to {old_base}, or at least overlap.")
+    return new_base / p
 
 
 # MISCELLANEOUS -------------------------------------------------------------
@@ -135,7 +152,9 @@ def get_method_name(s: str) -> str:
 
 
 def path_matches(p: Path | str, path_pattern: re.Pattern) -> Path | Literal[False]:
-    for parent in (p := Path(p)).parents:
+    for parent in sorted((p := Path(p)).parents):
+        if parent == Path("."):
+            continue
         if re.search(path_pattern, str(parent)):
             return parent
     if re.search(path_pattern, str(p)):

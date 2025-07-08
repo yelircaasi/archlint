@@ -42,7 +42,7 @@ def check_docs_structure(
     )
     expected: list[str] = sort_on_path(deduplicate_ordered(duplicated))
     missing, unexpected, overlap = analyze_discrepancies(
-        actual, expected, allow_additional=cfg.docs.allow_additional
+        expected, actual, allow_additional=cfg.docs.allow_additional
     )
 
     return (
@@ -68,7 +68,7 @@ def check_tests_structure(
         source_objects.apply(partial(map_to_test, cfg=cfg), cfg.tests.ignore)
     )
     missing, unexpected, overlap = analyze_discrepancies(
-        actual, expected, allow_additional=cfg.tests.allow_additional
+        expected, actual, allow_additional=cfg.tests.allow_additional
     )
 
     return (

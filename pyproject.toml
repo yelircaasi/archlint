@@ -322,9 +322,9 @@ file_per_directory = "linus|guido|grace|utils"
 unit_dir = "tests/unit"
 use_filename_suffix = true
 allow_additional = false
-ignore = ":test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
+ignore = "Config\\.default|:test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
 file_per_class = ""
-file_per_directory = "linus|guido|grace|utils"
+file_per_directory = ""
 function_per_class = ""
 replace_double_underscore = true
 

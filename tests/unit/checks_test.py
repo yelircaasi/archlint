@@ -479,6 +479,7 @@ classes_mixed_tests = [
         ["inherited_a", "inherited_b"],
     ),
 ]
+strlist: list[str] = []
 classes_out_of_order = [
     (
         Path("src/model.py"),
@@ -490,7 +491,7 @@ classes_out_of_order = [
             "__init__": "def __init__(self):",
             "put_me_first": "def put_me_first(self):",
         },
-        [],
+        strlist,
     )
 ]
 match_output = [re.compile(r"No problems detected", re.DOTALL)]

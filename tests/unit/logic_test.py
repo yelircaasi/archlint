@@ -30,15 +30,22 @@ from archlint.logic import (
 )
 
 int_graph = grimp.build_graph(
-    "grimp",
+    "archlint",
     include_external_packages=False,
     cache_dir="/tmp/grimp_cache",
 )
 ext_graph = grimp.build_graph(
-    "grimp",
+    "archlint",
     include_external_packages=True,
     cache_dir="/tmp/grimp_cache",
 )
+icfg1 = ImportsConfig(
+        internal_allowed_everywhere={""},
+        external_allowed_everywhere={""},
+        allowed=ImportInfo(internal={}, external={"archlint.utils": {"typing"}}),
+        disallowed=ImportInfo(internal={"archlint.collection": {"archlint.utils"}}, external={}),
+        grimp_cache="",
+    )
 cfg1 = Configuration(
     root_dir=Path("/home/frodo/projects/ring"),
     module_name="hello_world",
@@ -49,15 +56,9 @@ cfg1 = Configuration(
         file_per_class=re.compile(r"expand_me"),
         ignore=re.compile(r""),
         replace_double_underscore=True,
-        md_dir=Path(""),
+        md_dir=Path("docs/markdown"),
     ),
-    imports=ImportsConfig(
-        internal_allowed_everywhere={""},
-        external_allowed_everywhere={""},
-        allowed=ImportInfo(internal={}, external={}),
-        disallowed=ImportInfo(internal={}, external={}),
-        grimp_cache="",
-    ),
+    imports=icfg1,
     methods=MethodsConfig(
         normal=9.0,
         ordering=(
@@ -66,7 +67,7 @@ cfg1 = Configuration(
         ),
     ),
     tests=TstsConfig(
-        unit_dir=Path(""),
+        unit_dir=Path("tests/unit_tests"),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
         file_per_class=re.compile(r"expand_me"),
@@ -112,20 +113,6 @@ cfg2 = Configuration(
         replace_double_underscore=False,
         use_filename_suffix=False,
     ),
-)
-icfg1 = ImportsConfig(
-    internal_allowed_everywhere={""},
-    external_allowed_everywhere={""},
-    allowed=ImportInfo(internal={}, external={}),
-    disallowed=ImportInfo(internal={}, external={}),
-    grimp_cache="",
-)
-icfg2 = ImportsConfig(
-    internal_allowed_everywhere={""},
-    external_allowed_everywhere={""},
-    allowed=ImportInfo(internal={}, external={}),
-    disallowed=ImportInfo(internal={}, external={}),
-    grimp_cache="",
 )
 
 
@@ -198,7 +185,7 @@ def test_make_doc_filename(pre: Path, post: Path):
             "cool_method",
             re.compile(r"expand_me"),
             re.compile(r"collapse_me"),
-            "/some/expand_me/to/file_test.py:001:TestCoolClass.test_cool_method",
+            "/some/expand_me/to/file/coolclass_test.py:001:TestCoolClass.test_cool_method",
         ),
         (
             Path("/some/path/collapse_me/file.py"),
@@ -207,7 +194,7 @@ def test_make_doc_filename(pre: Path, post: Path):
             "cool_method",
             re.compile(r"expand_me"),
             re.compile(r"collapse_me"),
-            "/some/path/collapse_me.py:001:TestCoolClass.test_cool_method",
+            "/some/path/collapse_me_test.py:001:TestCoolClass.test_cool_method",
         ),
         (
             Path("/some/path/to/file.py"),
@@ -219,6 +206,7 @@ def test_make_doc_filename(pre: Path, post: Path):
             "/some/path/to/file_test.py:001:TestCoolClass.test_cool_method",
         ),
     ],
+    ids=["file-per-class", "file-per-directory", "one-to-one"],
 )
 def test_make_test_method_path(
     path: Path,
@@ -247,7 +235,7 @@ def test_make_test_method_path(
             "some/expand_me/to/file/coolclass.md:001:CoolClass",
         ),
         (
-            Path("/some/path/to/file.py"),
+            Path("some/path/collapse_me/to/file.py"),
             "2",
             "CoolClass",
             re.compile(r"expand_me"),
@@ -260,9 +248,10 @@ def test_make_test_method_path(
             "CoolClass",
             re.compile(r"expand_me"),
             re.compile(r"collapse_me"),
-            "some/path/to/file.md:034:CoolClass",
+            "/some/path/to/file.md:042:CoolClass",
         ),
     ],
+    ids=["file-per-class", "file-per-directory", "one-to-one"],
 )
 def test_make_doc_class_path(
     path: Path,
@@ -279,14 +268,29 @@ def test_make_doc_class_path(
 @pytest.mark.parametrize(
     "path, idx, func_name, file_per_directory, expected",
     [
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
+        (
+            Path("some/collapse_me/to/file.py"),
+            "99",
+            "cool_function",
+            re.compile(r"collapse_me"),
+            "some/collapse_me_test.py:099:test_cool_function",
+        ),
+        (
+            Path("some/collapse_me/to/file.py"),
+            "99",
+            "cool_function",
+            re.compile(r"no_match"),
+            "some/collapse_me/to/file_test.py:099:test_cool_function",
+        ),
     ],
+    ids=["file-per-directory", "one-to-one"],
 )
 def test_make_test_function_path(
-    path: Path, idx: str, func_name: str, file_per_directory: re.Pattern, expected: str
+    path: Path,
+    idx: str,
+    func_name: str,
+    file_per_directory: re.Pattern,
+    expected: str,
 ):
     assert make_test_function_path(path, idx, func_name, file_per_directory) == expected
 
@@ -294,11 +298,22 @@ def test_make_test_function_path(
 @pytest.mark.parametrize(
     "path, idx, func_name, file_per_directory, expected",
     [
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
-        (Path(""), "", "", re.compile(r""), ""),
+        (
+            Path("some/collapse_me/to/file.py"),
+            "99",
+            "cool_function",
+            re.compile(r"collapse_me"),
+            "some/collapse_me.md:099:cool_function",
+        ),
+        (
+            Path("some/collapse_me/to/file.py"),
+            "99",
+            "cool_function",
+            re.compile(r"no_match"),
+            "some/collapse_me/to/file.md:099:cool_function",
+        ),
     ],
+    ids=["file-per-directory", "one-to-one"],
 )
 def test_make_doc_function_path(
     path: Path, idx: str, func_name: str, file_per_directory: re.Pattern, expected: str
@@ -309,10 +324,10 @@ def test_make_doc_function_path(
 @pytest.mark.parametrize(
     "config, pre, post",
     [
-        (cfg1, "path/file.py:001:greet", "path/file_test.py:001:test_greet"),
+        (cfg1, "src/hello_world/submodule/file.py:001:greet", "tests/unit_tests/submodule/file_test.py:001:test_greet"),
         (cfg1, "src/hello_world/_file.py:001:Greeting", ""),
-        (cfg2, "path/file_.py:001:UpperNoDot", ""),
-        (cfg2, "_:999:__mangled", "_:999:test___mangled"),
+        (cfg1, "src/hello_world/path/file_.py:001:UpperNoDot", ""),
+        (cfg1, "src/hello_world/__hello.py:999:__mangled", "tests/unit_tests/_hello_test.py:999:test_mangled"),
     ],
 )
 def test_map_to_test(config: Configuration, pre: str, post: str):
@@ -322,10 +337,10 @@ def test_map_to_test(config: Configuration, pre: str, post: str):
 @pytest.mark.parametrize(
     "config, pre, post",
     [
-        (cfg1, "path/file.py:001:greet", "path/file.md:001:greet"),
-        (cfg2, "path/file.py:001:Greet.greeter", "path/file.md:001:Greet.greeter"),
-        (cfg2, "path/file_.py:001:_private", "path/file_test.py:001:test_private"),
-        (cfg2, "_:999:__mangled", "_:999:test___mangled"),
+        (cfg1, "src/hello_world/path/file.py:001:greet", "docs/markdown/path/file.md:001:greet"),
+        (cfg1, "path/file.py:001:Greet.greeter", "docs/markdown/path/file.md:001:Greet"),
+        (cfg1, "path/file_.py:001:_private", "docs/markdown/path/file_.md:001:_private"),
+        (cfg1, "_.py:999:__mangled", "docs/markdown/_.md:999:_mangled"),
     ],
 )
 def test_map_to_doc(config: Configuration, pre: str, post: str):
@@ -339,6 +354,7 @@ def test_map_to_doc(config: Configuration, pre: str, post: str):
         ({}, {"mod1": {"import1"}, "grimp": {"sys"}}, {"allow_me"}, ext_graph, {}),
         ({}, {}, {""}, "TODO", {}),
     ],
+    ids=["a", "b", "c"],
 )
 def test_compute_disallowed(
     allowed: dict[str, set[str]],
@@ -351,51 +367,42 @@ def test_compute_disallowed(
 
 
 @pytest.mark.parametrize(
-    "config, pre, post",
+    "config, module_name, disallowed_internal, disallowed_external",
     [
-        (icfg1, "", ""),
-        (icfg1, "", ""),
-        (icfg2, "", ""),
-        (icfg2, "", ""),
+        (icfg1, "archlint", {"archlint.collection": {"archlint.utils"}}, {}),
+        # (icfg1, "archlint", {}, {}),
+        # (icfg1, "archlint", {}, {}),
+        # (icfg1, "archlint", {}, {}),
     ],
+    ids=["internal_violation"],
 )
-def test_get_disallowed_imports(config: ImportsConfig, pre: str, post: str):
-    assert get_disallowed_imports(config, pre) == post
+def test_get_disallowed_imports(config: ImportsConfig, module_name: str, disallowed_internal: dict[str, set[str]], disallowed_external: dict[str, set[str]]):
+    violations_internal, violations_external = get_disallowed_imports(config, module_name)
+    assert violations_internal == disallowed_internal
+    assert violations_external == disallowed_external
 
 
 @pytest.mark.parametrize(
     "method_dict, post, methods_cfg",
     [
         (
-            {"": ""},
-            ["", ""],
+            {"method_a": "def method_a()", "method_b": "def method_b()"},
+            ["method_b", "method_a"],
             MethodsConfig(
                 normal=6.66,
                 ordering=(
-                    (re.compile(r""), 0.0),
-                    (re.compile(r""), 0.0),
+                    (re.compile(r"_b"), 0.0),
+                    (re.compile(r"_a"), 1.0),
                 ),
             ),
         ),
         (
-            {"": ""},
-            ["", ""],
+            {"method_a": "def method_a()", "method_b": "def method_b()", "normal": "def normal(): ..."},
+            ["method_a", "method_b", "normal"],
             MethodsConfig(
                 normal=6.66,
                 ordering=(
-                    (re.compile(r""), 0.0),
-                    (re.compile(r""), 0.0),
-                ),
-            ),
-        ),
-        (
-            {"": ""},
-            ["", ""],
-            MethodsConfig(
-                normal=6.66,
-                ordering=(
-                    (re.compile(r""), 0.0),
-                    (re.compile(r""), 0.0),
+                    (re.compile(r"method_"), 0.0),
                 ),
             ),
         ),
@@ -406,20 +413,22 @@ def test_sort_methods(method_dict: dict[str, str], post: list[str], methods_cfg:
 
 
 @pytest.mark.parametrize(
-    "actual, expected, allow_additional, missing, unexpected, overlap",
+    "expected, actual, allow_additional, missing, unexpected, overlap",
     [
-        (["", ""], ["", ""], re.compile(r""), ["", ""], ["", ""], {"", ""}),
-        (["", ""], ["", ""], re.compile(r""), ["", ""], ["", ""], {"", ""}),
-        (["", ""], ["", ""], re.compile(r""), ["", ""], ["", ""], {"", ""}),
+        (["a", "b", "c"], ["a", "b", "c"], re.compile(r"additional"), [], [], {"a", "b", "c"}),
+        (["a", "b", "c"], ["a", "c"], re.compile(r"additional"), ["b"], [], {"a", "c"}),
+        (["a", "c"], ["a", "b", "c"], re.compile(r"additional"), [], ["b"], {"a", "c"}),
+        (["a", "c"], ["a", "b"], re.compile(r"additional"), ["c"], ["b"], {"a"}),
     ],
+    ids=["0", "1", "2", "3"]
 )
 def test_analyze_discrepancies(
-    actual: list[str],
     expected: list[str],
+    actual: list[str],
     allow_additional: re.Pattern,
     missing: list[str],
     unexpected: list[str],
     overlap: set[str],
 ):
-    result = analyze_discrepancies(actual, expected, allow_additional)
+    result = analyze_discrepancies(expected, actual, allow_additional)
     assert result == (missing, unexpected, overlap)

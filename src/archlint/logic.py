@@ -55,12 +55,13 @@ def make_test_method_path(
     file_per_class: re.Pattern,
     file_per_directory: re.Pattern,
 ) -> str:
-    if _p := path_matches(p, file_per_class):
-        p = _p.parent / class_name.lower()
+    if path_matches(p, file_per_class):
+        print(p)
+        p = p.parent / p.name.replace(".py", "") / class_name.lower()
     else:
         p = path_matches(p, file_per_directory) or p
 
-    return f"{make_test_filename(p)}:{i}:Test{class_name}.{make_test_method(method_name)}"
+    return f"{make_test_filename(p)}:{i:0>3}:Test{class_name}.{make_test_method(method_name)}"
 
 
 def make_doc_class_path(
@@ -70,31 +71,31 @@ def make_doc_class_path(
     file_per_class: re.Pattern,
     file_per_directory: re.Pattern,
 ) -> str:
-    if _p := path_matches(p, file_per_class):
-        p = _p.parent / class_name.lower()
+    if path_matches(p, file_per_class):
+        p = p.parent / p.name.replace(".py", "") / class_name.lower()
     else:
         p = path_matches(p, file_per_directory) or p
 
-    return f"{make_doc_filename(p)}:{i}:{class_name}"
+    return f"{make_doc_filename(p)}:{i:0>3}:{class_name}"
 
 
 def make_test_function_path(
     p: Path, i: str, function_name: str, file_per_directory: re.Pattern
 ) -> str:
     p = path_matches(p, file_per_directory) or p
-    return f"{make_test_filename(p)}:{i}:test_{function_name}"
+    return f"{make_test_filename(p)}:{i:0>3}:test_{function_name}"
 
 
 def make_doc_function_path(
     p: Path, i: str, function_name: str, file_per_directory: re.Pattern
 ) -> str:
     p = path_matches(p, file_per_directory) or p
-    return f"{make_doc_filename(p)}:{i}:{function_name}"
+    return f"{make_doc_filename(p)}:{i:0>3}:{function_name}"
 
 
 def map_to_test(s: str, cfg: Configuration) -> str:
     path_str, i, ob = s.split(":")
-    path_ = move_path(path_str, cfg.module_root_dir, cfg.tests.unit_dir, cfg.root_dir)
+    path_ = move_path(path_str, cfg.module_root_dir, cfg.tests.unit_dir)
     if "." in ob:
         class_name, method_name = ob.split(".")
         result = make_test_method_path(
@@ -114,7 +115,7 @@ def map_to_test(s: str, cfg: Configuration) -> str:
 
 def map_to_doc(s: str, cfg: Configuration) -> str:
     path_str, i, ob = s.split(":")
-    path_ = move_path(path_str, cfg.module_root_dir, cfg.docs.md_dir, cfg.root_dir)
+    path_ = move_path(path_str, cfg.module_root_dir, cfg.docs.md_dir)
     if "." in ob:
         class_name, _ = ob.split(".")
         result = make_doc_class_path(
@@ -158,7 +159,7 @@ def compute_disallowed(
             via_disallowed = filter_with(upstream, imports)
             violations[module].update(via_disallowed)
 
-    return violations
+    return {m: ss for m, ss in violations.items() if ss}
 
 
 def get_disallowed_imports(icfg: ImportsConfig, module_name: str) -> tuple[SetDict, SetDict]:
@@ -202,15 +203,15 @@ def sort_methods(method_dict: dict[str, str], cfg: MethodsConfig) -> list[str]:
 
 
 def analyze_discrepancies(
-    actual: list[str],
     expected: list[str],
+    actual: list[str],
     allow_additional: re.Pattern,
 ) -> tuple[list[str], list[str], set[str]]:
     actual_set = set(actual := list(map(remove_ordering_index, actual)))
     expected_set = set(expected := list(map(remove_ordering_index, expected)))
 
     missing: list[str] = [t for t in expected if t not in actual_set]
-    unexpected: list[str] = [] if allow_additional else [t for t in actual if t not in expected_set]
+    unexpected: list[str] = [] if (allow_additional is True) else [t for t in actual if t not in expected_set]
     overlap = actual_set.intersection(expected_set)
 
     return missing, unexpected, overlap

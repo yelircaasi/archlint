@@ -1,5 +1,6 @@
 import re
-import subprocess
+
+from click.testing import CliRunner
 
 from archlint.cli import (
     main,
@@ -20,30 +21,42 @@ def test_main(capsys):
 
 
 def test_archlint_cli(capsys):
-    result = subprocess.run(["archlint"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli)
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output
 
 
 def test_run_all(capsys):
-    result = subprocess.run(["archlint", "all"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli, ["all"])
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output
 
 
 def test_docs(capsys):
-    result = subprocess.run(["archlint", "docs"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli, ["docs"])
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output
 
 
 def test_imports(capsys):
-    result = subprocess.run(["archlint", "imports"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli, ["imports"])
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output
 
 
 def test_methods(capsys):
-    result = subprocess.run(["archlint", "methods"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli, ["methods"])
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output
 
 
 def test_tests(capsys):
-    result = subprocess.run(["archlint", "tests"], capture_output=True).stdout
-    assert "No problems detected." in result
+    runner = CliRunner()
+    result = runner.invoke(archlint_cli, ["tests"])
+    assert result.exit_code == 0
+    assert "No problems detected." in result.output

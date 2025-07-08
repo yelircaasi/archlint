@@ -51,52 +51,46 @@ def test_get_project_root():
 
 
 def test_get_project_root__error():
-    with (
-        patch("archlint.utils.THIS_FILE", Path("/nonexistent.py")),
-        patch.object(Path, "cwd", return_value=Path("/nonexistent")),
-    ):
+    with patch.object(Path, "cwd", return_value=Path("/nonexistent")):
         with pytest.raises(
-            FileNotFoundError, match="Directory root containing 'pyproject.toml' not found."
+            FileNotFoundError,
+            match="Directory root containing 'pyproject.toml' not found.",
         ):
             get_project_root()
 
 
 @pytest.mark.parametrize(
-    "to_move, old, new, root, expected",
+    "to_move, old, new, expected",
     [
         (
             Path("/home/frodo/src/hello/utils.py"),
             Path("/home/frodo/src/hello"),
-            Path("/home/frodo/tests/unit"),
-            Path("/home/frodo"),
+            Path("tests/unit"),
             Path("tests/unit/utils.py"),
         ),
         (
             Path("src/hello/utils.py"),
             Path("/home/frodo/src/hello"),
-            Path("/home/frodo/tests/unit"),
-            Path("/home/frodo"),
+            Path("tests/unit"),
             Path("tests/unit/utils.py"),
         ),
         (
             Path("/home/frodo/src/hello/greeting_styles/rude.py"),
             Path("/home/frodo/src/hello"),
-            Path("/home/frodo/tests/unit"),
-            Path("/home/frodo"),
+            Path("tests/unit"),
             Path("tests/unit/greeting_styles/rude.py"),
         ),
         (
             Path("src/hello/greeting_styles/rude.py"),
             Path("/home/frodo/src/hello"),
-            Path("/home/frodo/tests/unit"),
-            Path("/home/frodo"),
+            Path("tests/unit"),
             Path("tests/unit/greeting_styles/rude.py"),
         ),
     ],
     ids=[0, 1, 2, 3],
 )
-def test_move_path(to_move: Path, old: Path, new: Path, root: Path, expected: Path):
-    assert move_path(to_move, old, new, root) == expected
+def test_move_path(to_move: Path, old: Path, new: Path, expected: Path):
+    assert move_path(to_move, old, new) == expected
 
 
 def test_always_true():

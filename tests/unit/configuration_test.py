@@ -39,7 +39,7 @@ internal_allowed_everywhere = ["utils"]
 
 [tool.archlint.imports.disallowed.internal]
 
-[tool.scripts.imports.disallowed.external]
+[tool.archlint.imports.disallowed.external]
 
 [tool.archlint.methods]
 init = 0
@@ -138,49 +138,49 @@ keep_double_underscore = true
 
 def test_get_docs_config():
     default = get_docs_config({})
-    from_default_toml = get_docs_config(tomllib.loads(DEFAULT_TOML)["archlint"]["docs"])
+    from_default_toml = get_docs_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["docs"])
     assert default == from_default_toml
 
     custom = DocsConfig()  # TODO
-    from_custom_toml = get_docs_config(tomllib.loads(CUSTOM_TOML)["archlint"]["docs"])
+    from_custom_toml = get_docs_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["docs"])
     assert custom == from_custom_toml
 
 
 def test_get_imports_config():
     default = get_imports_config({})
-    from_default_toml = get_imports_config(tomllib.loads(DEFAULT_TOML)["archlint"]["imports"])
+    from_default_toml = get_imports_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["imports"])
     assert default == from_default_toml
 
     custom = ImportsConfig()  # TODO
-    from_custom_toml = get_imports_config(tomllib.loads(CUSTOM_TOML)["archlint"]["imports"])
+    from_custom_toml = get_imports_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["imports"])
     assert custom == from_custom_toml
 
 
 def test_get_methods_config():
     default = get_methods_config({})
-    from_default_toml = get_methods_config(tomllib.loads(DEFAULT_TOML)["archlint"]["methods"])
+    from_default_toml = get_methods_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["methods"])
     assert default == from_default_toml
 
     custom = MethodsConfig()  # TODO
-    from_custom_toml = get_methods_config(tomllib.loads(CUSTOM_TOML)["archlint"]["methods"])
+    from_custom_toml = get_methods_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["methods"])
     assert custom == from_custom_toml
 
 
 def test_get_tests_config():
     default = get_tests_config({})
-    from_default_toml = get_tests_config(tomllib.loads(DEFAULT_TOML)["archlint"]["tests"])
+    from_default_toml = get_tests_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["tests"])
     assert default == from_default_toml
 
     custom = TstsConfig()  # TODO
-    from_custom_toml = get_tests_config(tomllib.loads(CUSTOM_TOML)["archlint"]["tests"])
+    from_custom_toml = get_tests_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["tests"])
     assert custom == from_custom_toml
 
 
 def test_get_config():
     default = get_config({})
-    from_default_toml = get_config(tomllib.loads(DEFAULT_TOML)["archlint"])
+    from_default_toml = get_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"])
     assert default == from_default_toml
 
     custom = Configuration()  # TODO
-    from_custom_toml = get_config(tomllib.loads(CUSTOM_TOML)["archlint"])
+    from_custom_toml = get_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"])
     assert custom == from_custom_toml

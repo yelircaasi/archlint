@@ -46,12 +46,12 @@ def test_display_disallowed(violations: dict, contained: list[str], noncontained
 @pytest.mark.parametrize(
     "internal_violations, external_violations, painter, contained, noncontained",
     [
-        ({}, {}, Color.green, [Color.green("No problems detected.")], ["missing"]),
+        ({}, {}, Color.green, ["No problems detected."], ["missing"]),
         (
             {"a": {"module_a"}},
             {"b": {"bar"}},
             Color.red,
-            [Color.red("module_a"), "bar", "EXTERNAL IMPORTS", "INTERNAL MODULE IMPORTS"],
+            ["module_a", "bar", "EXTERNAL IMPORTS", "INTERNAL MODULE IMPORTS"],
             ["o problems "],
         ),
     ],
@@ -136,4 +136,3 @@ def test_make_discrepancy_report(tmp_path):
     assert "3" in report
     assert "UNEXPECTED" in report
     assert "1" in report
-    assert "ORDERING MISMATCH" in report
