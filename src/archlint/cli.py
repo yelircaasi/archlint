@@ -1,8 +1,12 @@
+"""
+Simple and intuitive command-line interface for archlint.
+"""
+
 import sys
 
 import click
 
-from . import (
+from .checks import (
     check_docs_structure,
     check_imports,
     check_method_order,
@@ -41,7 +45,7 @@ def run_all(ctx: click.Context) -> bool:
     mo_report, mo_problems = check_method_order(cfg, source_objects)
     docs_report, docs_problems = check_docs_structure(cfg, source_objects, docs_objects)
     tests_report, tests_problems = check_tests_structure(cfg, source_objects, tests_objects)
-    imports_report, imports_problems = check_imports(cfg)
+    imports_report, imports_problems = check_imports(cfg.imports, cfg.module_name)
 
     click.echo(mo_report)
     click.echo(docs_report)
@@ -69,7 +73,8 @@ def docs(ctx: click.Context) -> bool:
 @archlint_cli.command(help="Inspect import structures and dependencies.")
 @click.pass_context
 def imports(ctx: click.Context) -> bool:
-    report, problems = check_imports(ctx.obj["CFG"])
+    cfg = ctx.obj["CFG"]
+    report, problems = check_imports(cfg.imports, cfg.module_name)
     click.echo(report)
     click.echo()
 

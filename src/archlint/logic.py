@@ -1,9 +1,13 @@
+"""
+Functions implementing the core of the code analysis logic.
+"""
+
 import re
 from pathlib import Path
 
 import grimp
 
-from .configuration import Configuration, ImportConfig, MethodOrderConfig
+from .configuration import Configuration, ImportsConfig, MethodsConfig
 from .regexes import Regex
 from .utils import (
     dedup_underscores,
@@ -59,22 +63,32 @@ def make_test_method_path(
     return f"{make_test_filename(p)}:{i}:Test{class_name}.{make_test_method(method_name)}"
 
 
-def make_doc_class_path(p: Path, i: str, class_name: str, cfg: Configuration) -> str:
-    if _p := path_matches(p, cfg.docs.file_per_class):
+def make_doc_class_path(
+    p: Path,
+    i: str,
+    class_name: str,
+    file_per_class: re.Pattern,
+    file_per_directory: re.Pattern,
+) -> str:
+    if _p := path_matches(p, file_per_class):
         p = _p.parent / class_name.lower()
     else:
-        p = path_matches(p, cfg.docs.file_per_directory) or p
+        p = path_matches(p, file_per_directory) or p
 
     return f"{make_doc_filename(p)}:{i}:{class_name}"
 
 
-def make_test_function_path(p: Path, i: str, function_name: str, cfg: Configuration) -> str:
-    p = path_matches(p, cfg.tests.file_per_directory) or p
+def make_test_function_path(
+    p: Path, i: str, function_name: str, file_per_directory: re.Pattern
+) -> str:
+    p = path_matches(p, file_per_directory) or p
     return f"{make_test_filename(p)}:{i}:test_{function_name}"
 
 
-def make_doc_function_path(p: Path, i: str, function_name: str, cfg: Configuration) -> str:
-    p = path_matches(p, cfg.docs.file_per_directory) or p
+def make_doc_function_path(
+    p: Path, i: str, function_name: str, file_per_directory: re.Pattern
+) -> str:
+    p = path_matches(p, file_per_directory) or p
     return f"{make_doc_filename(p)}:{i}:{function_name}"
 
 
@@ -94,8 +108,8 @@ def map_to_test(s: str, cfg: Configuration) -> str:
     elif ob[0].isupper():
         return ""
     else:
-        result = make_test_function_path(path_, i, ob, cfg)
-    if not cfg.tests.keep_double_underscore:
+        result = make_test_function_path(path_, i, ob, cfg.tests.file_per_directory)
+    if not cfg.tests.replace_double_underscore:
         return dedup_underscores(result)
     return result
 
@@ -105,10 +119,12 @@ def map_to_doc(s: str, cfg: Configuration) -> str:
     path_ = move_path(path_str, cfg.module_root_dir, cfg.docs.md_dir, cfg.root_dir)
     if "." in ob:
         class_name, _ = ob.split(".")
-        result = make_doc_class_path(path_, i, class_name, cfg)
+        result = make_doc_class_path(
+            path_, i, class_name, cfg.docs.file_per_class, cfg.docs.file_per_directory
+        )
     else:
-        result = make_doc_function_path(path_, i, ob, cfg)
-    if not cfg.docs.keep_double_underscore:
+        result = make_doc_function_path(path_, i, ob, cfg.docs.file_per_directory)
+    if not cfg.docs.replace_double_underscore:
         return dedup_underscores(result)
     return result
 
@@ -149,7 +165,7 @@ def compute_disallowed(
     return violations
 
 
-def get_disallowed_imports(icfg: ImportConfig, module_name: str) -> tuple[SetDict, SetDict]:
+def get_disallowed_imports(icfg: ImportsConfig, module_name: str) -> tuple[SetDict, SetDict]:
     internal_graph = grimp.build_graph(
         module_name,
         include_external_packages=False,
@@ -176,7 +192,7 @@ def get_disallowed_imports(icfg: ImportConfig, module_name: str) -> tuple[SetDic
     return internal_disallowed, external_disallowed
 
 
-def sort_methods(method_dict: dict[str, str], cfg: MethodOrderConfig) -> list[str]:
+def sort_methods(method_dict: dict[str, str], cfg: MethodsConfig) -> list[str]:
     regex_pairs: tuple[tuple[re.Pattern, float], ...] = cfg.ordering
     normal_value: float = cfg.normal
 
@@ -192,13 +208,13 @@ def sort_methods(method_dict: dict[str, str], cfg: MethodOrderConfig) -> list[st
 def analyze_discrepancies(
     actual: list[str],
     expected: list[str],
-    allow_additional: bool = False,
+    allow_additional: re.Pattern,
 ) -> tuple[list[str], list[str], set[str]]:
     actual_set = set(actual := list(map(remove_ordering_index, actual)))
     expected_set = set(expected := list(map(remove_ordering_index, expected)))
 
-    missing = [t for t in expected if t not in actual_set]
-    unexpected = [] if allow_additional else [t for t in actual if t not in expected_set]
+    missing: list[str] = [t for t in expected if t not in actual_set]
+    unexpected: list[str] = [] if allow_additional else [t for t in actual if t not in expected_set]
     overlap = actual_set.intersection(expected_set)
 
     return missing, unexpected, overlap

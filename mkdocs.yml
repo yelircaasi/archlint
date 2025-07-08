@@ -4,14 +4,18 @@ docs_dir: docs/md
 site_dir: docs/site
 nav:
     - About: index.md
-    - __init__: init.md
-    - cli: cli.md
-    - configuration: configuration.md
-    - collection: collection.md
-    - logic: logic.md
-    - reporting: reporting.md
-    - regexes: regexes.md
-    - utils: utils.md
+    - CLI: cli_.md
+    - Configuration: configuration_.md
+    - API:
+        - checks: api/checks.md
+        - cli: api/cli.md
+        - collection: api/collection.md
+        - configuration: api/configuration.md
+        - logic: api/logic.md
+        - reporting: api/reporting.md
+        - regexes: api/regexes.md
+        - utils: api/utils.md
+    - Contributing: contributing.md
 plugins:
     - mkdocstrings:
         enabled: true

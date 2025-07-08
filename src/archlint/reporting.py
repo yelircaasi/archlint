@@ -1,3 +1,7 @@
+"""
+Helper functions for formatting and displaying analysis results in the console.
+"""
+
 import re
 from collections.abc import Callable
 from pathlib import Path
@@ -82,7 +86,7 @@ def make_unexpected_report(unexpected: list[str], painter: Callable[[str], str])
     )
 
 
-def make_ooo_report(
+def make_order_report(
     actual: list[str], expected: list[str], overlap: set[str], painter: Callable[[str], str]
 ) -> str:
     minlen = max(map(len, overlap)) + 18 if overlap else 5
@@ -121,7 +125,7 @@ def make_discrepancy_report(
     paint = make_colorize_path(specific_path, root_dir)
     actual = list(map(remove_ordering_index, actual))
     expected = list(map(remove_ordering_index, expected))
-    order_report = make_ooo_report(actual, expected, overlap, paint)
+    order_report = make_order_report(actual, expected, overlap, paint)
 
     if not (missing or unexpected or order_report):
         return f"\n{make_double_bar(title)}\n\n    {Color.green('No problems detected.')}"

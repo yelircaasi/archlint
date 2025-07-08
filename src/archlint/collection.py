@@ -1,9 +1,12 @@
+"""
+Class and functions tasked with finding and processing code objects in the source files.
+"""
+
 import re
 from collections.abc import Callable
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import cast
 
 from .regexes import Regex
 from .utils import (
@@ -11,7 +14,6 @@ from .utils import (
     deduplicate_ordered,
     get_method_name,
     path_matches_not,
-    project,
     remove_body,
     safe_search,
 )
@@ -21,6 +23,12 @@ ClassInfoBase = tuple[str, list[str], dict[str, str], list[str]]
 
 
 class Objects:
+    """
+    Dataclass to hold information collected on objects.
+
+    Used with source, test, and documentation objects, but only one of these per instance.
+    """
+
     def __init__(self, functions: list[tuple[Path, int, str]], classes: list[ClassInfo]):
         self.functions = functions
         self.classes = add_inherited_methods(classes)
@@ -93,8 +101,8 @@ def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
     for _p in sorted(md_dir.rglob("*.md")):
         source = _p.read_text()
         p = _p.relative_to(project_root)
-        new_functions = cast(list[tuple[Path, int, str]], project(p, collect_objects_in_md(source)))
-        functions.extend(new_functions)
+        for new_objects in collect_objects_in_md(source):
+            functions.append((p, *new_objects))
 
     return Objects(functions=functions, classes=[])
 

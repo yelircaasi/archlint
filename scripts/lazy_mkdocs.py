@@ -13,7 +13,7 @@ def first_newer(file1: str | Path, file2: str | Path) -> bool:
 
 
 def build_docs_if_necessary():
-    mkdocs_path = Path("docs/md")
+    mkdocs_path = Path("docs/md/api")
     index_path = Path("docs/site/index.html")
     git_head_path = Path(".git/logs/HEAD")
 

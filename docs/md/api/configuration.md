@@ -1,8 +1,100 @@
-# archlint.logic
+# ::: archlint.configuration
+    options:
+      members: false
+      show_root_heading: true
+      show_root_full_path: true
 
-This is the documentation page for the module `logic`.
+### ::: archlint.configuration.DocsConfig
+    handler: python
+    options:
+        members:
+          - allow_additional
+          - file_per_directory
+          - file_per_class
+          - ignore
+          - keep_double_underscore
+          - md_dir
+        inherited_members: false
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
 
-## ::: archlint.logic.make_test_method
+### ::: archlint.configuration.ImportInfo
+    handler: python
+    options:
+        members:
+          - external
+          - internal
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.configuration.ImportsConfig
+    handler: python
+    options:
+        members:
+          - internal_allowed_everywhere
+          - external_allowed_everywhere
+          - allowed
+          - disallowed
+          - grimp_cache
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.configuration.MethodsConfig
+    handler: python
+    options:
+        members:
+          - normal
+          - ordering
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.configuration.TestsConfig
+    handler: python
+    options:
+        members:
+          - allow_additional
+          - file_per_directory
+          - file_per_class
+          - ignore
+          - keep_double_underscore
+          - md_dir
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.configuration.Configuration
+    handler: python
+    options:
+        members:
+          - root_dir
+          - module_root_dir
+          - module_name
+          - docs
+          - imports
+          - methods
+          - tests
+        inherited_members: false
+        members_order: source
+        show_root_full_path: false
+        summary: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.configuration.get_docs_config
     handler: python
     options:
         show_root_full_path: false
@@ -10,7 +102,7 @@ This is the documentation page for the module `logic`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.logic.fix_dunder_filename
+### ::: archlint.configuration.get_imports_config
     handler: python
     options:
         show_root_full_path: false
@@ -18,7 +110,7 @@ This is the documentation page for the module `logic`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.logic.make_test_filename
+### ::: archlint.configuration.get_methods_config
     handler: python
     options:
         show_root_full_path: false
@@ -26,7 +118,7 @@ This is the documentation page for the module `logic`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.logic.make_doc_filename
+### ::: archlint.configuration.get_tests_config
     handler: python
     options:
         show_root_full_path: false
@@ -34,79 +126,7 @@ This is the documentation page for the module `logic`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.logic.make_test_method_path
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.make_doc_class_path
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.make_test_function_path
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.make_doc_function_path
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.map_to_test
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.map_to_doc
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.compute_disallowed
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.get_disallowed_imports
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.sort_methods
-    handler: python
-    options:
-        show_root_full_path: false
-        summary: false
-        show_root_heading: true
-        show_source: false
-
-## ::: archlint.logic.analyze_discrepancies
+### ::: archlint.configuration.get_config
     handler: python
     options:
         show_root_full_path: false

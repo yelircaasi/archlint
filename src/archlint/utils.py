@@ -1,11 +1,16 @@
+"""
+Small and simple utility functions.
+"""
+
 import re
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 from archlint.regexes import Regex
 
 # PATH -----------------------------------------------------------------------
+THIS_FILE = Path(__file__)
 
 
 def get_project_root() -> Path:
@@ -13,7 +18,7 @@ def get_project_root() -> Path:
     _dir = Path.cwd()
 
     while not (_dir / "pyproject.toml").exists():
-        _dir = (Path(__file__) if _dir == Path("/") else _dir).parent
+        _dir = (THIS_FILE if _dir == Path("/") else _dir).parent
 
         if (attempts := attempts + 1) > max_attempts:
             raise FileNotFoundError("Directory root containing 'pyproject.toml' not found.")
@@ -22,8 +27,9 @@ def get_project_root() -> Path:
 
 
 def move_path(p: str | Path, old_base: Path, new_base: Path, root: Path) -> Path:
-    p = Path(p).absolute()
-    p = new_base / p.relative_to(old_base)
+    p = Path(p)
+    p = root / p if not p.is_relative_to(root) else p
+    p = new_base / Path(p).relative_to(old_base)
     return (new_base / p).relative_to(root)
 
 
@@ -36,12 +42,8 @@ def always_true(s: str) -> bool:
 
 def assert_bool(b: bool) -> bool:
     if not isinstance(b, bool):
-        raise TypeError(f"Type 'bool' expected; found '{type(b)}'.")
+        raise TypeError(f"Type 'bool' expected; found '{type(b).__name__}'.")
     return b
-
-
-def project(single: Any, _list: list[tuple] | list[str]) -> list[tuple]:
-    return [(single, *elem) if isinstance(elem, tuple) else (single, elem) for elem in _list]
 
 
 def sort_on_path(strings: Iterable[str]) -> list[str]:
@@ -89,7 +91,7 @@ def dedup_underscores(s: str) -> str:
 
 
 def remove_body(s: str) -> str:
-    return re.split(r": *\n|: *\.\.\. *\n", s)[0]
+    return re.split(r": *\n|: *\.\.\. *\n?", s)[0]
 
 
 # REGEX ----------------------------------------------------------------------
@@ -102,23 +104,30 @@ def safe_search(p: re.Pattern, s: str, groupnum: int, fallback: str = "") -> str
 
 
 def make_regex(s: str) -> re.Pattern:
-    return re.compile(re.sub(r"\\*\(", "\\(", re.sub(r"\\*\.", "\\.", s)))
+    s = re.sub(r"\\+", r"\\", s)
+    return re.compile(s)
 
 
-def compile_for_path_segment(s: str) -> re.Pattern:
+def compile_for_path_segment(s: str | list[str]) -> re.Pattern:
+    def preprocess(_s: str) -> str:
+        if not _s.startswith("/"):
+            return r"/[^/]*?" + _s
+        return _s
+
     if not s:
         return Regex.MATCH_NOTHING
-    segments = [f"/[^/]*?{seg}[^/]*?" for seg in s.replace(".", "\\.").split("|")]
-    return re.compile(re.sub(r"\\+\.", "\\.", "|".join(segments)))
+
+    segments = s.split("|") if isinstance(s, str) else s
+    return make_regex("|".join(map(preprocess, segments)))
 
 
-def compile_for_path_segment_or_bool(s: str | bool) -> re.Pattern:
+def compile_string_or_bool(s: str | bool) -> re.Pattern:
     s = str(s)
     if s == "True":
-        return re.compile(".")
+        return re.compile(".+")
     if s == "False":
-        return compile_for_path_segment("")
-    return compile_for_path_segment(s)
+        return Regex.MATCH_NOTHING
+    return make_regex(s)
 
 
 def get_method_name(s: str) -> str:
@@ -126,9 +135,11 @@ def get_method_name(s: str) -> str:
 
 
 def path_matches(p: Path | str, path_pattern: re.Pattern) -> Path | Literal[False]:
-    if s := re.search(path_pattern, p := str(p)):
-        dirname = s.group(0)[1:]
-        return Path(p.split(dirname)[0]) / dirname
+    for parent in (p := Path(p)).parents:
+        if re.search(path_pattern, str(parent)):
+            return parent
+    if re.search(path_pattern, str(p)):
+        return p
     return False
 
 
@@ -177,16 +188,14 @@ class Color:
         return f"\u001b[35m{s}\u001b[0m"
 
     @staticmethod
-    def cyan(s: str) -> str:
-        return f"\u001b[36m{s}\u001b[0m"
-
-    @staticmethod
     def white(s: str) -> str:
         return f"\u001b[37m{s}\u001b[0m"
 
 
 def make_colorize_path(specific_dir: Path, root_dir: Path) -> Callable[[str], str]:
-    doc_prefix = f"{specific_dir.relative_to(root_dir)}/"
+    # doc_prefix = f"{specific_dir.relative_to(root_dir)}/"
+    # new_doc_prefix = f"{doc_prefix}\u001b[36m"
+    doc_prefix = f"{specific_dir}/"
     new_doc_prefix = f"{doc_prefix}\u001b[36m"
 
     def colorize_path(s: str) -> str:

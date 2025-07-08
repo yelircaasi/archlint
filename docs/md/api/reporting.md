@@ -1,8 +1,10 @@
-# archlint.reporting
+# ::: archlint.reporting
+    options:
+      members: false
+      show_root_heading: true
+      show_root_full_path: true
 
-This is the documentation page for the module `guido`.
-
-## ::: archlint.reporting.make_methods_report
+### ::: archlint.reporting.make_methods_report
     handler: python
     options:
         show_root_full_path: false
@@ -11,7 +13,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.display_disallowed
+### ::: archlint.reporting.display_disallowed
     handler: python
     options:
         show_root_full_path: false
@@ -20,7 +22,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.make_imports_report
+### ::: archlint.reporting.make_imports_report
     handler: python
     options:
         show_root_full_path: false
@@ -29,7 +31,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.make_missing_report
+### ::: archlint.reporting.make_missing_report
     handler: python
     options:
         show_root_full_path: false
@@ -38,7 +40,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.make_unexpected_report
+### ::: archlint.reporting.make_unexpected_report
     handler: python
     options:
         show_root_full_path: false
@@ -47,7 +49,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.make_ooo_report
+### ::: archlint.reporting.make_order_report
     handler: python
     options:
         show_root_full_path: false
@@ -56,7 +58,7 @@ This is the documentation page for the module `guido`.
         show_root_heading: true
         show_source: false
 
-## ::: archlint.reporting.make_discrepancy_report
+### ::: archlint.reporting.make_discrepancy_report
     handler: python
     options:
         show_root_full_path: false

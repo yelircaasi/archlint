@@ -251,6 +251,9 @@ suppress-none-returning = true
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.archlint]
+source_directory = "src"
+
 [tool.archlint.imports]
 primitive_modules = ["regexes"]
 external_allowed_everywhere = [
@@ -276,7 +279,7 @@ utils = [
     "deal",
 ]
 
-[tool.archlint.method_order]
+[tool.archlint.methods.builtins_order]
 init = 0
 abstract_property = 0.0401
 property = 0.041
@@ -295,36 +298,35 @@ normal = 4
 private = 5
 mangled = 6
 
-[tool.archlint.method_order.regex]
+[tool.archlint.methods.custom_order]
 "@model_validator|model_validate" = 0
 "_pydantic_" = 0.01
-" adapter(" = 0.011
+" adapter\\(" = 0.011
 "@field_validator" = 0.1
 "model_serializ|model_dump" = 0.00001
 "@field_serializer" = 0.3
 "__call__" = 0.99
 "check_.+" = 9
-" read[^ ]+(" = 3.98
-" write[^ ]+(" = 3.99
+" read[^ ]+\\(" = 3.98
+" write[^ ]+\\(" = 3.99
 "[^_][a-z_]+_hook$" = 9
 
 [tool.archlint.docs]
+md_dir = "docs/md/api"
 allow_additional = false
+ignore = "exceptions.py|:_[A-Z]"
 file_per_class = ""
 file_per_directory = "linus|guido|grace|utils"
-ignore = "exceptions.py|:_[A-Z]"
-keep_double_underscore = true
-md_dir = "docs/md"
 
 [tool.archlint.tests]
-allow_additional = false
-file_per_class = ""
-file_per_directory = "linus|guido|grace|utils"
-function_for_class = ""
-ignore = ":test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
-keep_double_underscore = true
 unit_dir = "tests/unit"
 use_filename_suffix = true
+allow_additional = false
+ignore = ":test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
+file_per_class = ""
+file_per_directory = "linus|guido|grace|utils"
+function_per_class = ""
+replace_double_underscore = true
 
 [tool.scripts.imports.disallowed.external]
 utils = ["pydantic"]
