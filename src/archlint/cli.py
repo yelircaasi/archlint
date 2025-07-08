@@ -16,7 +16,7 @@ from .collection import (
     collect_docs_objects,
     collect_source_objects,
 )
-from .configuration import Configuration, get_config
+from .configuration import Configuration
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
 @click.group(invoke_without_command=True)
 @click.pass_context
 def archlint_cli(ctx: click.Context):
-    ctx.ensure_object(dict)["CFG"] = get_config()
+    ctx.ensure_object(dict)["CFG"] = Configuration.read()  # TODO: support passing explicit config
 
     if ctx.invoked_subcommand is None:
         return ctx.invoke(run_all)

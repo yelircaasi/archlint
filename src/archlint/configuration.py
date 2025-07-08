@@ -70,14 +70,15 @@ class DocsConfig:
 
     def merge(
         self,
-        unit_dir: Path | None = None,
+        *,
+        md_dir: Path | None = None,
         allow_additional: re.Pattern | None = None,
         ignore: re.Pattern | None = None,
         file_per_class: re.Pattern | None = None,
         file_per_directory: re.Pattern | None = None,
         replace_double_underscore: bool | None = None,
     ) -> Self:
-        self.unit_dir = unit_dir or self.unit_dir
+        self.md_dir = md_dir or self.md_dir
         self.allow_additional = allow_additional or self.allow_additional
         self.ignore = ignore or self.ignore
         self.file_per_class = file_per_class or self.file_per_class
@@ -102,8 +103,8 @@ class ImportsConfig:
         disallowed: ImportInfo | None = None,
         grimp_cache: str = "/tmp/grimp_cache"
     ):
-        self.internal_allowed_everywhere: set[str] | None = None,
-        self.external_allowed_everywhere: set[str] | None = None,
+        self.internal_allowed_everywhere = internal_allowed_everywhere or set()
+        self.external_allowed_everywhere = external_allowed_everywhere or set()
         self.allowed: ImportInfo = allowed or ImportInfo()
         self.disallowed: ImportInfo = disallowed or ImportInfo()
         self.grimp_cache = grimp_cache
@@ -111,13 +112,15 @@ class ImportsConfig:
         self._check_conflicts()
 
     @classmethod
-    def from_dict(cls, raw_imports_config: dict, module_name: str) -> Self:
+    def from_dict(cls, raw_imports_config: dict, module_name: str | None = None) -> Self:
         def fix_internal(d: dict[str, list[str]], mod_name: str) -> dict[str, set[str]]:
             prepend_name = partial(prepend_module_name, module_name=mod_name)
             return {prepend_name(k): set(map(prepend_name, v)) for k, v in d.items()}
 
         def fix_external(d: dict[str, list[str]], mod_name: str) -> dict[str, set[str]]:
             return {prepend_module_name(k, mod_name): set(v) for k, v in d.items()}
+        
+        module_name = module_name or default_module_name()
 
         return cls().merge(
             internal_allowed_everywhere=set(
@@ -150,6 +153,7 @@ class ImportsConfig:
 
     def merge(
         self,
+        *,
         internal_allowed_everywhere: set[str] | None = None,
         external_allowed_everywhere: set[str] | None = None,
         allowed: ImportInfo | None = None,
@@ -163,6 +167,7 @@ class ImportsConfig:
         self.grimp_cache = grimp_cache or self.grimp_cache
 
         self._check_conflicts()
+        return self
 
     def _check_conflicts(self) -> None:
         if self.allowed.internal and self.disallowed.internal:
@@ -212,25 +217,26 @@ class MethodsConfig:
     
     def merge(
         self,
+        *,
         normal: float | None = None,
-        allow_additional: re.Pattern | None = None,
+        ordering: tuple[tuple[re.Pattern, float], ...] | None = None,
     ) -> Self:
         self.normal = normal if normal is not None else self.normal
-        self.allow_additional = allow_additional or self.allow_additional
+        self.ordering = ordering or self.ordering
 
         return self
 
 
 @dataclass
-class TstsConfig:
-    unit_dir: Path
-    allow_additional: re.Pattern
-    ignore: re.Pattern
-    file_per_class: re.Pattern
-    file_per_directory: re.Pattern
-    function_per_class: re.Pattern
-    replace_double_underscore: bool
-    use_filename_suffix: bool
+class UnitTestsConfig:
+    unit_dir: Path = field(default=Path("tests/unit"))
+    allow_additional: re.Pattern = field(default=Regex.MATCH_NOTHING)
+    ignore: re.Pattern = field(default=Regex.MATCH_NOTHING)
+    file_per_class: re.Pattern = field(default=Regex.MATCH_NOTHING)
+    file_per_directory: re.Pattern = field(default=Regex.MATCH_NOTHING)
+    function_per_class: re.Pattern = field(default=Regex.MATCH_NOTHING)
+    replace_double_underscore: bool = field(default=False)
+    use_filename_suffix: bool = field(default=True)
 
     @classmethod
     def from_dict(cls, pyproject_archlint_tests: dict) -> Self:
@@ -258,6 +264,7 @@ class TstsConfig:
 
     def merge(
         self,
+        *,
         unit_dir: Path | None = None,
         allow_additional: re.Pattern | None = None,
         ignore: re.Pattern | None = None,
@@ -281,37 +288,45 @@ class TstsConfig:
 
 @dataclass
 class Configuration:
-    root_dir: Path = field(default_factory=Path.cwd())
+    root_dir: Path = field(default_factory=Path.cwd)
     module_name: str = field(default_factory=default_module_name)
-    docs: DocsConfig = field(default_factory=TstsConfig)
-    tests: TstsConfig = field(default_factory=TstsConfig)
+    docs: DocsConfig = field(default_factory=DocsConfig)
+    tests: UnitTestsConfig= field(default_factory=UnitTestsConfig)
     imports: ImportsConfig = field(default_factory=ImportsConfig)
     methods: MethodsConfig = field(default_factory=MethodsConfig)
     module_root_dir: Path = field(default_factory=default_module_root_dir)
 
     @classmethod
-    def from_dict(cls, project_root: Path | None = None) -> Self:
+    def read(cls, explicitly_passed: str | Path | None = None) -> Self:
+        root_dir = get_project_root()
+        file_path = Path(explicitly_passed or root_dir / "pyproject.toml")
+        raw_dict = tomllib.loads(file_path.read_text())
+        return cls.from_dict(raw_dict, root_dir)
+
+    @classmethod
+    def from_dict(cls, config_dict: dict, project_root: Path | None = None) -> Self:
         root_dir: Path = project_root or get_project_root()
         raw_pyproject: dict = tomllib.loads((root_dir / "pyproject.toml").read_text())
-        default_module_name = raw_pyproject["project"]["name"].replace("-", "_")
+        module_name = raw_pyproject["project"]["name"].replace("-", "_")
         raw_config = raw_pyproject.get("tool", {}).get("archlint", {})
 
         return cls().merge(
             root_dir=root_dir,
-            module_root_dir=root_dir / "src" / default_module_name,
-            module_name=raw_config.get("module_name", default_module_name),
+            module_root_dir=root_dir / "src" / module_name,
+            module_name=raw_config.get("module_name", module_name),
             docs=DocsConfig.from_dict(raw_config.get("docs", {})),
-            imports=ImportsConfig.from_dict(raw_config.get("imports", {}), default_module_name),
-            tests=DocsConfig.from_dict(raw_config.get("tests", {})),
-            methods=ImportsConfig.from_dict(raw_config.get("methods", {})),
+            imports=ImportsConfig.from_dict(raw_config.get("imports", {}), module_name),
+            tests=UnitTestsConfig.from_dict(raw_config.get("tests", {})),
+            methods=MethodsConfig.from_dict(raw_config.get("methods", {})),
         )
 
     def merge(
         self,
+        *,
         root_dir: Path | None = None,
         module_name: str | None = None,
         docs: DocsConfig | None = None,
-        tests: TstsConfig | None = None,
+        tests: UnitTestsConfig| None = None,
         imports: ImportsConfig | None = None,
         methods: MethodsConfig | None = None,
         module_root_dir: Path | None = None,

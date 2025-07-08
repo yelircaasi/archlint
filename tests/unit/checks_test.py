@@ -18,7 +18,7 @@ from archlint.configuration import (
     ImportInfo,
     ImportsConfig,
     MethodsConfig,
-    TstsConfig,
+    UnitTestsConfig,
 )
 
 icfg_base = ImportsConfig(
@@ -49,7 +49,7 @@ cfg_base = Configuration(
             (re.compile(r"put_me_last"), 2.0),
         ),
     ),
-    tests=TstsConfig(
+    tests=UnitTestsConfig(
         unit_dir=Path(""),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
@@ -81,7 +81,7 @@ cfg_alt = Configuration(
             (re.compile(r"put_me_last"), 2.0),
         ),
     ),
-    tests=TstsConfig(
+    tests=UnitTestsConfig(
         unit_dir=Path(""),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),

@@ -5,12 +5,7 @@ from archlint.configuration import (
     DocsConfig,
     ImportsConfig,
     MethodsConfig,
-    TstsConfig,
-    get_config,
-    get_docs_config,
-    get_imports_config,
-    get_methods_config,
-    get_tests_config,
+    UnitTestsConfig,
 )
 
 DEFAULT_TOML = """
@@ -136,51 +131,66 @@ keep_double_underscore = true
 """
 
 
-def test_get_docs_config():
-    default = get_docs_config({})
-    from_default_toml = get_docs_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["docs"])
-    assert default == from_default_toml
+class TestDocsConfig:
+    def test_merge(self): ...
 
-    custom = DocsConfig()  # TODO
-    from_custom_toml = get_docs_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["docs"])
-    assert custom == from_custom_toml
+    def test_from_dict(self):
+        default = DocsConfig()
+        from_default_toml = DocsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["docs"])
+        assert default == from_default_toml
 
-
-def test_get_imports_config():
-    default = get_imports_config({})
-    from_default_toml = get_imports_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["imports"])
-    assert default == from_default_toml
-
-    custom = ImportsConfig()  # TODO
-    from_custom_toml = get_imports_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["imports"])
-    assert custom == from_custom_toml
+        custom = DocsConfig()  # TODO
+        from_custom_toml = DocsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["docs"])
+        assert custom == from_custom_toml
 
 
-def test_get_methods_config():
-    default = get_methods_config({})
-    from_default_toml = get_methods_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["methods"])
-    assert default == from_default_toml
+class TestImportsConfig:
+    def test_merge(self): ...
 
-    custom = MethodsConfig()  # TODO
-    from_custom_toml = get_methods_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["methods"])
-    assert custom == from_custom_toml
+    def test_from_dict(self):
+        default = ImportsConfig()
+        from_default_toml = ImportsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["imports"])
+        assert default == from_default_toml
 
-
-def test_get_tests_config():
-    default = get_tests_config({})
-    from_default_toml = get_tests_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["tests"])
-    assert default == from_default_toml
-
-    custom = TstsConfig()  # TODO
-    from_custom_toml = get_tests_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["tests"])
-    assert custom == from_custom_toml
+        custom = ImportsConfig()  # TODO
+        from_custom_toml = ImportsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["imports"])
+        assert custom == from_custom_toml
 
 
-def test_get_config():
-    default = get_config({})
-    from_default_toml = get_config(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"])
-    assert default == from_default_toml
+class TestMethodsConfig:
+    def test_merge(self): ...
 
-    custom = Configuration()  # TODO
-    from_custom_toml = get_config(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"])
-    assert custom == from_custom_toml
+    def test_from_dict(self):
+        default = MethodsConfig()
+        from_default_toml = MethodsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["methods"])
+        assert default == from_default_toml
+
+        custom = MethodsConfig()  # TODO
+        from_custom_toml = MethodsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["methods"])
+        assert custom == from_custom_toml
+
+
+class TestUnitTestsConfig:
+    def test_merge(self): ...
+
+    def test_from_dict(self):
+        default = UnitTestsConfig()
+        from_default_toml = UnitTestsConfig.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"]["tests"])
+        assert default == from_default_toml
+
+        custom = UnitTestsConfig()  # TODO
+        from_custom_toml = UnitTestsConfig.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"]["tests"])
+        assert custom == from_custom_toml
+
+
+class TestUnitTestsConfig:
+    def test_merge(self): ...
+
+    def test_from_dict(self):
+        default = Configuration()
+        from_default_toml = Configuration.from_dict(tomllib.loads(DEFAULT_TOML)["tool"]["archlint"])
+        assert default == from_default_toml
+
+        custom = Configuration()  # TODO
+        from_custom_toml = Configuration.from_dict(tomllib.loads(CUSTOM_TOML)["tool"]["archlint"])
+        assert custom == from_custom_toml

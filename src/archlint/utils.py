@@ -24,11 +24,11 @@ def get_project_root() -> Path:
     return _dir
 
 
-def default_module_root_dir() -> str:
+def default_module_root_dir() -> Path:
     return next((Path.cwd() / "src").iterdir())
 
 
-def default_module_name() -> Path:
+def default_module_name() -> str:
     return default_module_root_dir().name    
 
 

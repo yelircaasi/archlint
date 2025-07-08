@@ -10,7 +10,7 @@ from archlint.configuration import (
     ImportInfo,
     ImportsConfig,
     MethodsConfig,
-    TstsConfig,
+    UnitTestsConfig,
 )
 from archlint.logic import (
     analyze_discrepancies,
@@ -66,7 +66,7 @@ cfg1 = Configuration(
             (re.compile(r""), 1.0),
         ),
     ),
-    tests=TstsConfig(
+    tests=UnitTestsConfig(
         unit_dir=Path("tests/unit_tests"),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
@@ -103,7 +103,7 @@ cfg2 = Configuration(
             (re.compile(r""), 1.0),
         ),
     ),
-    tests=TstsConfig(
+    tests=UnitTestsConfig(
         unit_dir=Path(""),
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
