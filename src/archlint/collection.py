@@ -97,9 +97,12 @@ def collect_objects_in_md(
 
 def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
     functions: list[tuple[Path, int, str]] = []
+    code_block = re.compile(r"```.+?```", re.DOTALL)
 
     for _p in sorted(md_dir.rglob("*.md")):
         source = _p.read_text()
+        source = re.sub(code_block, "", source)
+
         p = _p.relative_to(project_root)
         for new_objects in collect_objects_in_md(source):
             functions.append((p, *new_objects))
@@ -108,6 +111,12 @@ def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
 
 
 def collect_object_texts(source: str) -> list[str]:
+    multiline_comment = re.compile(r"\"\"\".+?\"\"\"", re.DOTALL)
+    code_block = re.compile(r"```.+?```", re.DOTALL)
+    comment = re.compile(r"\n#[^\n]+\n", re.DOTALL)
+    source = re.sub(multiline_comment, "\"\"\"  \"\"\"", source)
+    source = re.sub(code_block, "```\n\n```", source)
+    source = re.sub(comment, "```\n\n```", source)
     return re.findall(Regex.OBJECT_TEXT, source)
 
 

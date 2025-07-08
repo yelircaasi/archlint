@@ -96,6 +96,8 @@ def make_doc_function_path(
 def map_to_test(s: str, cfg: Configuration) -> str:
     path_str, i, ob = s.split(":")
     path_ = move_path(path_str, cfg.module_root_dir, cfg.tests.unit_dir)
+    if path_.is_absolute():
+        path_ = path_.relative_to(cfg.root_dir)
     if "." in ob:
         class_name, method_name = ob.split(".")
         result = make_test_method_path(
@@ -116,6 +118,8 @@ def map_to_test(s: str, cfg: Configuration) -> str:
 def map_to_doc(s: str, cfg: Configuration) -> str:
     path_str, i, ob = s.split(":")
     path_ = move_path(path_str, cfg.module_root_dir, cfg.docs.md_dir)
+    if path_.is_absolute():
+        path_ = path_.relative_to(cfg.root_dir)
     if "." in ob:
         class_name, _ = ob.split(".")
         result = make_doc_class_path(

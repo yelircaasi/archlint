@@ -137,18 +137,18 @@ class ImportsConfig:
             ),
             allowed=ImportInfo(
                 internal=fix_internal(
-                    raw_imports_config["allowed"].get("internal", {}), mod_name=module_name
+                    raw_imports_config.get("allowed", {}).get("internal", {}), mod_name=module_name
                 ),
                 external=fix_external(
-                    raw_imports_config["allowed"].get("external", {}), mod_name=module_name
+                    raw_imports_config.get("allowed", {}).get("external", {}), mod_name=module_name
                 ),
             ),
             disallowed=ImportInfo(
                 internal=fix_internal(
-                    raw_imports_config["disallowed"].get("internal", {}), mod_name=module_name
+                    raw_imports_config.get("disallowed", {}).get("internal", {}), mod_name=module_name
                 ),
                 external=fix_external(
-                    raw_imports_config["disallowed"].get("external", {}), mod_name=module_name
+                    raw_imports_config.get("disallowed", {}).get("external", {}), mod_name=module_name
                 ),
             ),
             grimp_cache=raw_imports_config.get("grimp_cache", ".grimp_cache"),

@@ -269,15 +269,8 @@ internal_allowed_everywhere = ["regexes"]
 [tool.archlint.imports.disallowed.internal]
 utils = ["utils"]
 
-[tool.archlint.imports.allowed.internal]
-utils = [
-    "regexes",
-]
-
-[tool.archlint.imports.allowed.external]
-utils = [
-    "deal",
-]
+[tool.scripts.imports.disallowed.external]
+utils = ["pydantic"]
 
 [tool.archlint.methods.builtins_order]
 init = 0
@@ -327,9 +320,6 @@ file_per_class = ""
 file_per_directory = ""
 function_per_class = ""
 replace_double_underscore = true
-
-[tool.scripts.imports.disallowed.external]
-utils = ["pydantic"]
 
 [tool.tomlsort]
 all = false
