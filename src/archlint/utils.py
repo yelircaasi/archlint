@@ -25,7 +25,8 @@ def get_project_root() -> Path:
 
 
 def default_module_root_dir() -> Path:
-    return next((Path.cwd() / "src").iterdir())
+    cwd = Path.cwd()
+    return next((cwd / "src").iterdir()).relative_to(cwd)
 
 
 def default_module_name() -> str:
@@ -65,6 +66,10 @@ def assert_bool(b: bool) -> bool:
 
 def sort_on_path(strings: Iterable[str]) -> list[str]:
     return sorted(strings, key=lambda s: s.rsplit(":", maxsplit=1)[0])
+
+
+def boolean_merge(incumbent: dict, challenger: dict) -> dict:
+    return {k: challenger.get(k) or incumbent.get(k) for k in set(incumbent) | set(challenger)}
 
 
 # SEQUENCE PROCESSING --------------------------------------------------------
@@ -122,7 +127,7 @@ def safe_search(p: re.Pattern, s: str, groupnum: int, fallback: str = "") -> str
 
 def make_regex(s: str) -> re.Pattern:
     s = re.sub(r"\\+", r"\\", s)
-    return re.compile(s)
+    return re.compile(s or r"(?!)")
 
 
 def compile_for_path_segment(s: str | list[str]) -> re.Pattern:

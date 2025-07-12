@@ -52,7 +52,7 @@
         show_root_heading: true
         show_source: false
 
-### ::: archlint.cli.tests
+### ::: archlint.cli.tsts
     handler: python
     options:
         show_root_full_path: false

@@ -32,18 +32,20 @@ from archlint.logic import (
 int_graph = grimp.build_graph(
     "archlint",
     include_external_packages=False,
-    cache_dir="/tmp/grimp_cache",
+    cache_dir=".cache/grimp_cache",
 )
 ext_graph = grimp.build_graph(
     "archlint",
     include_external_packages=True,
-    cache_dir="/tmp/grimp_cache",
+    cache_dir=".cache/grimp_cache",
 )
 icfg1 = ImportsConfig(
     internal_allowed_everywhere={""},
     external_allowed_everywhere={""},
-    allowed=ImportInfo(internal={}, external={"archlint.utils": {"typing"}}),
-    disallowed=ImportInfo(internal={"archlint.collection": {"archlint.utils"}}, external={}),
+    internal=ImportInfo(is_internal=True, allowed={}, disallowed={"archlint.utils": {"typing"}}),
+    external=ImportInfo(
+        is_internal=False, allowed={"archlint.collection": {"archlint.utils"}}, disallowed={}
+    ),
     grimp_cache="",
 )
 cfg1 = Configuration(
@@ -51,16 +53,15 @@ cfg1 = Configuration(
     module_name="hello_world",
     module_root_dir=Path("/home/frodo/projects/ring/src/hello_world"),
     docs=DocsConfig(
+        md_dir=Path("docs/markdown"),
         allow_additional=re.compile(r""),
+        ignore=re.compile(r""),
         file_per_directory=re.compile(r"collapse_me"),
         file_per_class=re.compile(r"expand_me"),
-        ignore=re.compile(r""),
         replace_double_underscore=True,
-        md_dir=Path("docs/markdown"),
     ),
     imports=icfg1,
     methods=MethodsConfig(
-        normal=9.0,
         ordering=(
             (re.compile(r""), 0.0),
             (re.compile(r""), 1.0),
@@ -68,13 +69,13 @@ cfg1 = Configuration(
     ),
     tests=UnitTestsConfig(
         unit_dir=Path("tests/unit_tests"),
+        use_filename_suffix=False,
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
         file_per_class=re.compile(r"expand_me"),
         file_per_directory=re.compile(r"collapse_me"),
         function_per_class=re.compile(r""),
         replace_double_underscore=True,
-        use_filename_suffix=False,
     ),
 )
 cfg2 = Configuration(
@@ -82,22 +83,21 @@ cfg2 = Configuration(
     module_name="",
     module_root_dir=Path(""),
     docs=DocsConfig(
+        md_dir=Path(""),
         allow_additional=re.compile(r""),
+        ignore=re.compile(r""),
         file_per_directory=re.compile(r""),
         file_per_class=re.compile(r""),
-        ignore=re.compile(r""),
         replace_double_underscore=False,
-        md_dir=Path(""),
     ),
     imports=ImportsConfig(
         internal_allowed_everywhere={""},
         external_allowed_everywhere={""},
-        allowed=ImportInfo(internal={}, external={}),
-        disallowed=ImportInfo(internal={}, external={}),
+        internal=ImportInfo(is_internal=True, allowed={}, disallowed={}),
+        external=ImportInfo(is_internal=False, allowed={}, disallowed={}),
         grimp_cache="",
     ),
     methods=MethodsConfig(
-        normal=9.0,
         ordering=(
             (re.compile(r""), 0.0),
             (re.compile(r""), 1.0),
@@ -105,13 +105,13 @@ cfg2 = Configuration(
     ),
     tests=UnitTestsConfig(
         unit_dir=Path(""),
+        use_filename_suffix=False,
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
         file_per_class=re.compile(r""),
         file_per_directory=re.compile(r""),
         function_per_class=re.compile(r""),
         replace_double_underscore=False,
-        use_filename_suffix=False,
     ),
 )
 
@@ -402,7 +402,6 @@ def test_get_disallowed_imports(
             {"method_a": "def method_a()", "method_b": "def method_b()"},
             ["method_b", "method_a"],
             MethodsConfig(
-                normal=6.66,
                 ordering=(
                     (re.compile(r"_b"), 0.0),
                     (re.compile(r"_a"), 1.0),
@@ -417,7 +416,6 @@ def test_get_disallowed_imports(
             },
             ["method_a", "method_b", "normal"],
             MethodsConfig(
-                normal=6.66,
                 ordering=((re.compile(r"method_"), 0.0),),
             ),
         ),

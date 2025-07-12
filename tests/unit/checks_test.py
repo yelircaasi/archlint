@@ -14,19 +14,12 @@ from archlint.collection import Objects
 from archlint.configuration import (
     Configuration,
     DocsConfig,
-    ImportInfo,
     ImportsConfig,
     MethodsConfig,
     UnitTestsConfig,
 )
 
-icfg_base = ImportsConfig(
-    internal_allowed_everywhere={""},
-    external_allowed_everywhere={""},
-    allowed=ImportInfo(internal={}, external={}),
-    disallowed=ImportInfo(internal={}, external={}),
-    grimp_cache="",
-)
+icfg_base = ImportsConfig()
 cfg_base = Configuration(
     root_dir=Path(""),
     module_name="",
@@ -41,7 +34,6 @@ cfg_base = Configuration(
     ),
     imports=icfg_base,
     methods=MethodsConfig(
-        normal=9.0,
         ordering=(
             (re.compile(r"put_me_first"), 0.0),
             (re.compile(r"__init__"), 1.0),
@@ -50,13 +42,13 @@ cfg_base = Configuration(
     ),
     tests=UnitTestsConfig(
         unit_dir=Path(""),
+        use_filename_suffix=False,
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
         file_per_class=re.compile(r"expand_me"),
         file_per_directory=re.compile(r"collapse_me"),
         function_per_class=re.compile(r""),
         replace_double_underscore=False,
-        use_filename_suffix=False,
     ),
 )
 cfg_alt = Configuration(
@@ -73,7 +65,6 @@ cfg_alt = Configuration(
     ),
     imports=icfg_base,
     methods=MethodsConfig(
-        normal=9.0,
         ordering=(
             (re.compile(r"put_me_first"), 0.0),
             (re.compile(r"middle"), 1.0),
@@ -82,13 +73,13 @@ cfg_alt = Configuration(
     ),
     tests=UnitTestsConfig(
         unit_dir=Path(""),
+        use_filename_suffix=False,
         allow_additional=re.compile(r""),
         ignore=re.compile(r""),
         file_per_class=re.compile(r"expand_me"),
         file_per_directory=re.compile(r"collapse_me"),
         function_per_class=re.compile(r""),
         replace_double_underscore=False,
-        use_filename_suffix=False,
     ),
 )
 functions_baseline = [

@@ -81,6 +81,7 @@ allow_additional = false
 ignore = "exceptions.py|:_[A-Z]"
 file_per_class = ""
 file_per_directory = "linus|guido|grace|utils"
+replace_double_underscore = false
 
 [tool.archlint.imports]
 primitive_modules = ["regexes"]

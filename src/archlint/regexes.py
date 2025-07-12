@@ -30,7 +30,7 @@ class Regex:
     FUNCTION_NAME = re.compile(r"(?:^|\n)def ([^\(]+)")
     MATCH_NOTHING = re.compile("(?!)")
     METHOD_NAME = re.compile(r"def ([^\(]+)\(")
-    OBJECT_IN_MD = re.compile(r"#+ ::: [a-z_][a-z_0-9\.]+\.([A-Za-z_0-9]+)\n")
+    OBJECT_IN_MD = re.compile(r"##+ ::: [a-z_][a-z_0-9\.]+\.([A-Za-z_0-9]+)\n")
     OBJECT_TEXT = re.compile(
         (
             r"class [A-Za-z_][^\n]+:.+?\n\n\n|class [A-Za-z_][^\n]+:.+?$"

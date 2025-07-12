@@ -14,6 +14,24 @@
         show_root_heading: true
         show_source: false
 
+### ::: archlint.utils.default_module_root_dir
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        inherited_members: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.utils.default_module_name
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        inherited_members: false
+        show_root_heading: true
+        show_source: false
+
 ### ::: archlint.utils.move_path
     handler: python
     options:
@@ -42,6 +60,15 @@
         show_source: false
 
 ### ::: archlint.utils.sort_on_path
+    handler: python
+    options:
+        show_root_full_path: false
+        summary: false
+        inherited_members: false
+        show_root_heading: true
+        show_source: false
+
+### ::: archlint.utils.boolean_merge
     handler: python
     options:
         show_root_full_path: false

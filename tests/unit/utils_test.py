@@ -11,10 +11,13 @@ from archlint.utils import (
     Color,
     always_true,
     assert_bool,
+    boolean_merge,
     compile_for_path_segment,
     compile_string_or_bool,
     dedup_underscores,
     deduplicate_ordered,
+    default_module_name,
+    default_module_root_dir,
     filter_with,
     filter_without,
     get_method_name,
@@ -57,6 +60,14 @@ def test_get_project_root__error():
             match="Directory root containing 'pyproject.toml' not found.",
         ):
             get_project_root()
+
+
+def test_default_module_root_dir():
+    assert default_module_root_dir() == Path("src/archlint")
+
+
+def test_default_module_name():
+    assert default_module_name() == "archlint"
 
 
 @pytest.mark.parametrize(
@@ -123,6 +134,30 @@ def test_sort_on_path():
         "src/archlint/configuration.py:2:function_b",
     ]
     assert sort_on_path(pre) == post
+
+
+@pytest.mark.parametrize(
+    "incumbent, challenger, expected",
+    [
+        (
+            {"a": False, "b": "string", "c": False},
+            {"a": False, "b": True, "c": None},
+            {"a": False, "b": True, "c": False},
+        ),
+        # (
+        #     {},
+        #     {},
+        #     {},
+        # ),
+        # (
+        #     {},
+        #     {},
+        #     {},
+        # ),
+    ],
+)
+def test_boolean_merge(incumbent: dict, challenger: dict, expected: dict):
+    assert boolean_merge(incumbent, challenger) == expected
 
 
 @pytest.mark.parametrize(

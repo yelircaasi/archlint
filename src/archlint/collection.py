@@ -100,10 +100,10 @@ def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
     code_block = re.compile(r"```.+?```", re.DOTALL)
 
     for _p in sorted(md_dir.rglob("*.md")):
-        source = _p.read_text()
+        p = _p.relative_to(project_root) if _p.is_absolute() else _p
+        source = p.read_text()
         source = re.sub(code_block, "", source)
 
-        p = _p.relative_to(project_root)
         for new_objects in collect_objects_in_md(source):
             functions.append((p, *new_objects))
 
@@ -114,7 +114,7 @@ def collect_object_texts(source: str) -> list[str]:
     multiline_comment = re.compile(r"\"\"\".+?\"\"\"", re.DOTALL)
     code_block = re.compile(r"```.+?```", re.DOTALL)
     comment = re.compile(r"\n#[^\n]+\n", re.DOTALL)
-    source = re.sub(multiline_comment, "\"\"\"  \"\"\"", source)
+    source = re.sub(multiline_comment, '"""  """', source)
     source = re.sub(code_block, "```\n\n```", source)
     source = re.sub(comment, "```\n\n```", source)
     return re.findall(Regex.OBJECT_TEXT, source)
@@ -125,7 +125,7 @@ def collect_source_objects(src_dir: Path, root_dir: Path) -> Objects:
     classes: list[ClassInfo] = []
 
     for _p in sorted(src_dir.rglob("*.py")):
-        p = _p.relative_to(root_dir)
+        p = _p.relative_to(root_dir) if _p.is_absolute() else _p
         for i, text in enumerate(collect_object_texts(_p.read_text())):
             if text.startswith(("@dataclass", "class ")) and (
                 class_tuple := collect_method_info(text)

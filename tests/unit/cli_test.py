@@ -50,7 +50,7 @@ def test_methods(capsys):
     assert "No problems detected." in result.output
 
 
-def test_tests(capsys):
+def test_tsts(capsys):
     runner = CliRunner()
     result = runner.invoke(archlint_cli, ["tests"])
     assert result.exit_code == 0

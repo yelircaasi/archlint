@@ -266,11 +266,8 @@ external_allowed_everywhere = [
 ]
 internal_allowed_everywhere = ["regexes"]
 
-[tool.archlint.imports.disallowed.internal]
+[tool.archlint.imports.internal.disallowed]
 utils = ["utils"]
-
-[tool.scripts.imports.disallowed.external]
-utils = ["pydantic"]
 
 [tool.archlint.methods.builtins_order]
 init = 0
@@ -314,12 +311,15 @@ file_per_directory = "linus|guido|grace|utils"
 [tool.archlint.tests]
 unit_dir = "tests/unit"
 use_filename_suffix = true
-allow_additional = false
-ignore = "Config\\.default|:test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
+allow_additional = "__edgecases|__error"
+ignore = "configuration\\.py.+\\.__eq__|configuration\\.py.+\\.__repr__|:test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
 file_per_class = ""
 file_per_directory = ""
 function_per_class = ""
 replace_double_underscore = true
+
+[tool.scripts.imports.external.disallowed]
+utils = ["pydantic"]
 
 [tool.tomlsort]
 all = false

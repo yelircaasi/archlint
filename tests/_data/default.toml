@@ -1,0 +1,45 @@
+[tool.archlint]
+root_dir = "."
+module_name = "archlint"
+module_root_dir = "src/archlint"
+
+[tool.archlint.docs]
+md_dir = "docs/md"
+allow_additional = "(?!)"
+ignore = "(?!)"
+file_per_directory = "(?!)"
+file_per_class = "(?!)"
+replace_double_underscore = false
+
+[tool.archlint.imports]
+internal_allowed_everywhere = []
+external_allowed_everywhere = []
+grimp_cache = ".grimp_cache"
+
+[tool.archlint.methods.builtins_order]
+init = 0.0
+abstract_property = 1.0
+property = 2.0
+abstract_private_property = 3.0
+private_property = 4.0
+abstract_dunder = 5.0
+dunder = 6.0
+abstract_classmethod = 7.0
+classmethod = 8.0
+abstract = 9.0
+final = 11.0
+abstract_static = 12.0
+static = 13.0
+abstract_private = 14.0
+private = 15.0
+mangled = 16.0
+
+[tool.archlint.tests]
+unit_dir = "tests/unit"
+use_filename_suffix = true
+allow_additional = "(?!)"
+ignore = "(?!)"
+file_per_directory = "(?!)"
+file_per_class = "(?!)"
+function_per_class = "(?!)"
+replace_double_underscore = false

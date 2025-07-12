@@ -408,7 +408,7 @@ def test_add_inherited_methods():
     assert len(result) == 1
 
 
-def test_objects_edge_cases():
+def test_objects__edgecases():
     empty_objects = Objects(functions=[], classes=[])
     assert empty_objects.function_strings == []
     assert empty_objects.method_strings == []
@@ -421,7 +421,7 @@ def test_objects_edge_cases():
     assert empty_objects.apply(empty_processor) == []
 
 
-def test_collect_method_info_edge_cases():
+def test_collect_method_info__edgecases():
     empty_class = "class Empty:\n    pass"
     result = collect_method_info(empty_class)
     assert result[0] == "Empty"
@@ -433,7 +433,7 @@ def test_collect_method_info_edge_cases():
     assert len(result) == 4
 
 
-def test_parse_function_edge_cases():
+def test_parse_function__edgecases():
     non_function = "not a function"
     result = parse_function(non_function)
     assert result is None or result == ""

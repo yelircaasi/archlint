@@ -56,7 +56,6 @@ def make_test_method_path(
     file_per_directory: re.Pattern,
 ) -> str:
     if path_matches(p, file_per_class):
-        print(p)
         p = p.parent / p.name.replace(".py", "") / class_name.lower()
     else:
         p = path_matches(p, file_per_directory) or p
@@ -178,14 +177,14 @@ def get_disallowed_imports(icfg: ImportsConfig, module_name: str) -> tuple[SetDi
         cache_dir=icfg.grimp_cache,
     )
     internal_disallowed = compute_disallowed(
-        icfg.allowed.internal,
-        icfg.disallowed.internal,
+        icfg.internal.allowed,
+        icfg.internal.disallowed,
         icfg.internal_allowed_everywhere,
         internal_graph,
     )
     external_disallowed = compute_disallowed(
-        icfg.allowed.external,
-        icfg.disallowed.external,
+        icfg.external.allowed,
+        icfg.external.disallowed,
         icfg.external_allowed_everywhere,
         external_graph,
     )
@@ -215,9 +214,9 @@ def analyze_discrepancies(
     expected_set = set(expected := list(map(remove_ordering_index, expected)))
 
     missing: list[str] = [t for t in expected if t not in actual_set]
-    unexpected: list[str] = (
-        [] if (allow_additional is True) else [t for t in actual if t not in expected_set]
-    )
+    unexpected: list[str] = [
+        t for t in actual if (t not in expected_set) and not re.search(allow_additional, t)
+    ]
     overlap = actual_set.intersection(expected_set)
 
     return missing, unexpected, overlap
