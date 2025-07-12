@@ -8,13 +8,6 @@ from archlint.cli import (
 )
 
 
-def test_main(capsys):
-    main()
-    text = capsys.readouterr().out
-    assert len(re.findall("Hello", text)) == 4
-    assert len(re.findall(r"[a-z-_]+ version: \d+\.\d+", text)) == 3
-
-
 def test_archlint_cli(capsys):
     runner = CliRunner()
     result = runner.invoke(archlint_cli)

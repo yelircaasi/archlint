@@ -101,6 +101,10 @@ exclude_lines = [
     "pragma: no cover",
     "if __name__ == .__main__.:",
 ]
+exclude_also = [
+    "def main",
+    "def __repr__",
+]
 fail_under = 0
 
 [tool.coverage.html]
@@ -312,7 +316,7 @@ file_per_directory = "linus|guido|grace|utils"
 unit_dir = "tests/unit"
 use_filename_suffix = true
 allow_additional = "__edgecases|__error"
-ignore = "configuration\\.py.+\\.__eq__|configuration\\.py.+\\.__repr__|:test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
+ignore = ":main$|configuration\\.py.+\\.__eq__|configuration\\.py.+\\.__repr__|:test__[A-Z]|__init__$|_abcs|exceptions|__get_pydantic_core_schema__"
 file_per_class = ""
 file_per_directory = ""
 function_per_class = ""

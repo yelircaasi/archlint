@@ -36,9 +36,9 @@ def check_method_order(cfg: Configuration, source_objects: Objects) -> tuple[str
 def check_docs_structure(
     cfg: Configuration, source_objects: Objects, docs_objects: Objects
 ) -> tuple[str, bool]:
-    actual: list[str] = sort_on_path(docs_objects.strings)
+    actual: list[str] = sort_on_path(docs_objects.strings_without_methods)
     duplicated = source_objects.apply(
-        partial(map_to_doc, cfg=cfg), cfg.docs.ignore, include_methodless=True
+        partial(map_to_doc, cfg=cfg), cfg.docs.ignore, classes_only=True
     )
     expected: list[str] = sort_on_path(deduplicate_ordered(duplicated))
     missing, unexpected, overlap = analyze_discrepancies(

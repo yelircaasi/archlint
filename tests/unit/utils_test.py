@@ -375,26 +375,6 @@ def test_get_method_name(source: str, name: str):
             re.compile(r"source/hello[^/]*?"),
             False,
         ),
-        # (
-        #     Path(""),
-        #     re.compile(r""),
-        #     True,
-        # ),
-        # (
-        #     Path(""),
-        #     re.compile(r""),
-        #     False,
-        # ),
-        # (
-        #     Path(""),
-        #     re.compile(r""),
-        #     False,
-        # ),
-        # (
-        #     Path(""),
-        #     re.compile(r""),
-        #     False,
-        # ),
     ],
 )
 def test_path_matches(path: Path, pattern: re.Pattern, success: bool):

@@ -100,11 +100,11 @@ class TestObjects:
         assert len(result) == 1
         assert "processed_src/utils.py:000:test_func" in result
 
-        # with include_methodless
+        # with classes_only
         empty_classes = [(Path("src/empty.py"), 2, "Empty", [], {}, [])]
-        objects_with_empty = Objects(functions=functions, classes=classes + empty_classes)
+        objects_with_classes_only = Objects(functions=functions, classes=classes + empty_classes)
 
-        result = objects_with_empty.apply(add_prefix, include_methodless=True)
+        result = objects_with_classes_only.apply(add_prefix, classes_only=True)
         assert any("Empty" in s for s in result)
 
         # with processor that returns empty string
@@ -252,7 +252,7 @@ def test_collect_docs_objects():
         md_dir = Path("docs")
         project_root = Path(".")
 
-        with patch("your_module.collect_objects_in_md") as mock_collect:
+        with patch("archlint.collection.collect_objects_in_md") as mock_collect:
             mock_collect.return_value = [(0, "test_function")]
 
             result = collect_docs_objects(md_dir, project_root)

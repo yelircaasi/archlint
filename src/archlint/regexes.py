@@ -38,5 +38,5 @@ class Regex:
         ),
         re.DOTALL,
     )
-    SUPER_CLASS = re.compile(r"[A-Z_][_A-Za-z_0-9]+(?=[,\[])")
+    SUPER_CLASS = re.compile(r"[A-Z_][_A-Za-z_0-9]+(?=[,\[\)])")
     methods = Methods()

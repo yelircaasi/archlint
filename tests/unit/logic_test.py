@@ -42,9 +42,15 @@ ext_graph = grimp.build_graph(
 icfg1 = ImportsConfig(
     internal_allowed_everywhere={""},
     external_allowed_everywhere={""},
-    internal=ImportInfo(is_internal=True, allowed={}, disallowed={"archlint.utils": {"typing"}}),
+    internal=ImportInfo(
+        is_internal=True,
+        allowed={},
+        disallowed={"archlint.collection": {"archlint.utils"}},
+    ),
     external=ImportInfo(
-        is_internal=False, allowed={"archlint.collection": {"archlint.utils"}}, disallowed={}
+        is_internal=False,
+        allowed={"archlint.utils": {"typing"}},
+        disallowed={},
     ),
     grimp_cache="",
 )
@@ -54,8 +60,8 @@ cfg1 = Configuration(
     module_root_dir=Path("/home/frodo/projects/ring/src/hello_world"),
     docs=DocsConfig(
         md_dir=Path("docs/markdown"),
-        allow_additional=re.compile(r""),
-        ignore=re.compile(r""),
+        allow_additional=re.compile(r"(?!)"),
+        ignore=re.compile(r"(?!)"),
         file_per_directory=re.compile(r"collapse_me"),
         file_per_class=re.compile(r"expand_me"),
         replace_double_underscore=True,
@@ -63,18 +69,18 @@ cfg1 = Configuration(
     imports=icfg1,
     methods=MethodsConfig(
         ordering=(
-            (re.compile(r""), 0.0),
-            (re.compile(r""), 1.0),
+            (re.compile(r"a"), 0.0),
+            (re.compile(r"b"), 1.0),
         ),
     ),
     tests=UnitTestsConfig(
         unit_dir=Path("tests/unit_tests"),
         use_filename_suffix=False,
-        allow_additional=re.compile(r""),
-        ignore=re.compile(r""),
+        allow_additional=re.compile(r"(?!)"),
+        ignore=re.compile(r"(?!)"),
         file_per_class=re.compile(r"expand_me"),
         file_per_directory=re.compile(r"collapse_me"),
-        function_per_class=re.compile(r""),
+        function_per_class=re.compile(r"(?!)"),
         replace_double_underscore=True,
     ),
 )
@@ -83,11 +89,11 @@ cfg2 = Configuration(
     module_name="",
     module_root_dir=Path(""),
     docs=DocsConfig(
-        md_dir=Path(""),
-        allow_additional=re.compile(r""),
-        ignore=re.compile(r""),
-        file_per_directory=re.compile(r""),
-        file_per_class=re.compile(r""),
+        md_dir=Path("docs/markdown"),
+        allow_additional=re.compile(r"(?!)"),
+        ignore=re.compile(r"(?!)"),
+        file_per_directory=re.compile(r"(?!)"),
+        file_per_class=re.compile(r"(?!)"),
         replace_double_underscore=False,
     ),
     imports=ImportsConfig(
@@ -99,18 +105,18 @@ cfg2 = Configuration(
     ),
     methods=MethodsConfig(
         ordering=(
-            (re.compile(r""), 0.0),
-            (re.compile(r""), 1.0),
+            (re.compile(r"(?!)"), 0.0),
+            (re.compile(r"(?!)"), 1.0),
         ),
     ),
     tests=UnitTestsConfig(
         unit_dir=Path(""),
         use_filename_suffix=False,
-        allow_additional=re.compile(r""),
-        ignore=re.compile(r""),
-        file_per_class=re.compile(r""),
-        file_per_directory=re.compile(r""),
-        function_per_class=re.compile(r""),
+        allow_additional=re.compile(r"(?!)"),
+        ignore=re.compile(r"(?!)"),
+        file_per_class=re.compile(r"(?!)"),
+        file_per_directory=re.compile(r"(?!)"),
+        function_per_class=re.compile(r"(?!)"),
         replace_double_underscore=False,
     ),
 )

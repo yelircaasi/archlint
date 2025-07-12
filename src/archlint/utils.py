@@ -168,7 +168,7 @@ def path_matches(p: Path | str, path_pattern: re.Pattern) -> Path | Literal[Fals
 
 
 def path_matches_not(p: Path | str, path_pattern: re.Pattern) -> bool:
-    return not path_matches(p, path_pattern)
+    return not re.search(path_pattern, str(p))
 
 
 # COLOR ----------------------------------------------------------------------

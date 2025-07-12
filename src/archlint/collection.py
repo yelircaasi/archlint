@@ -49,6 +49,14 @@ class Objects:
     @property
     def strings(self) -> list[str]:
         return self.method_strings + self.function_strings
+    
+    @property
+    def strings_without_methods(self) -> list[str]:
+        return self.classes_only + self.function_strings
+    
+    @property
+    def classes_only(self) -> list[str]:
+        return list(set([f"{p}:{i:0>3}:{cl}" for p, i, cl, _, __, ___ in self.classes]))
 
     @property
     def methodless(self) -> list[str]:
@@ -58,9 +66,13 @@ class Objects:
         self,
         processor: Callable[[str], str],
         ignore: re.Pattern | None = None,
-        include_methodless: bool = False,
+        classes_only: bool = False,
     ) -> list[str]:
-        _strings: list[str] = self.strings + (self.methodless if include_methodless else [])
+        _strings: list[str]
+        if classes_only:
+            _strings = self.classes_only + self.function_strings
+        else:
+            _strings = self.strings
         if ignore:
             _strings = list(filter(partial(path_matches_not, path_pattern=ignore), _strings))
         return list(filter(bool, map(processor, _strings)))
@@ -71,6 +83,7 @@ def collect_method_info(class_text: str) -> ClassInfoBase:
         return _s.startswith(("def", "@"))
 
     def fix_init(_s: str) -> str:
+        _s = _s.replace(":\n", ":\n\n")
         _s = re.sub("\n    def __init__", "\n\n    def __init__", _s, count=1).strip()
         _s = re.sub('"""\n    def ', '"""\n\n    def ', _s, count=1)
         return re.sub(":\n    def ", ":\n\n    def ", _s, count=1)
@@ -79,7 +92,7 @@ def collect_method_info(class_text: str) -> ClassInfoBase:
     method_strings = list(filter(is_method, map(remove_body, class_text.split("\n\n    ")[1:])))
     method_names = deduplicate_ordered(map(get_method_name, method_strings))
     method_dict = {k: v for k, v in zip(method_names, method_strings) if k}
-    super_classes = re.findall(Regex.SUPER_CLASS, class_text)
+    super_classes = re.findall(Regex.SUPER_CLASS, class_text.split(":\n")[0])
     method_names = list(filter(bool, method_names))
 
     return class_name, method_names, method_dict, super_classes
@@ -101,7 +114,7 @@ def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
 
     for _p in sorted(md_dir.rglob("*.md")):
         p = _p.relative_to(project_root) if _p.is_absolute() else _p
-        source = p.read_text()
+        source = str(p.read_text())  # hack for testing purposes, to make mock work
         source = re.sub(code_block, "", source)
 
         for new_objects in collect_objects_in_md(source):
@@ -111,6 +124,7 @@ def collect_docs_objects(md_dir: Path, project_root: Path) -> Objects:
 
 
 def collect_object_texts(source: str) -> list[str]:
+    source = str(source)  # hack for testing purposes, to make mock work
     multiline_comment = re.compile(r"\"\"\".+?\"\"\"", re.DOTALL)
     code_block = re.compile(r"```.+?```", re.DOTALL)
     comment = re.compile(r"\n#[^\n]+\n", re.DOTALL)

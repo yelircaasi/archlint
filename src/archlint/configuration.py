@@ -308,7 +308,6 @@ NORMAL_DEFAULT = 10.0
 class MethodsConfig:
     ordering: tuple[tuple[re.Pattern, float], ...] = BUILTINS
     normal: float = NORMAL_DEFAULT
-    # custom: tuple[tuple[re.Pattern, float], ...] = tuple()
 
     def __repr__(self):
         return str(self)
@@ -449,6 +448,10 @@ class UnitTestsConfig:
 
 @dataclass
 class Configuration:
+    """
+    Top-level configuration object containing all settings necessary to execute all checks.
+    """
+
     root_dir: Path = field(default_factory=Path.cwd)
     module_name: str = field(default_factory=default_module_name)
     module_root_dir: Path = field(default_factory=default_module_root_dir)
