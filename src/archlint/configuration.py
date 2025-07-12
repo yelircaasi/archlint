@@ -301,10 +301,13 @@ BUILTINS_NAME_DICT = {
 }
 
 
+NORMAL_DEFAULT = 10.0
+
+
 @dataclass
 class MethodsConfig:
     ordering: tuple[tuple[re.Pattern, float], ...] = BUILTINS
-    normal: float = 99.0
+    normal: float = NORMAL_DEFAULT
     # custom: tuple[tuple[re.Pattern, float], ...] = tuple()
 
     def __repr__(self):
@@ -348,7 +351,8 @@ class MethodsConfig:
         ]
 
         return cls().merge(
-            ordering=tuple(custom + predefined), normal=builtins_mapping.get("normal", 99.0)
+            ordering=tuple(custom + predefined),
+            normal=builtins_mapping.get("normal", NORMAL_DEFAULT),
         )
 
     def merge(
