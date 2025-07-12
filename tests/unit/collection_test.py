@@ -66,6 +66,36 @@ class TestObjects:
         assert "src/models.py:001:User.login" in result
         assert len(result) == 2
 
+    def test_strings_without_methods(self):
+        functions = [(Path("src/utils.py"), 0, "helper")]
+        classes = [(Path("src/models.py"), 1, "User", ["login"], {}, [])]
+
+        objects = Objects(functions=functions, classes=classes)
+        result = objects.strings_without_methods
+
+        assert "src/utils.py:000:helper" in result
+        assert "src/models.py:001:User" in result
+        assert len(result) == 2
+
+    def test_classes_only(self):
+        functions = []
+        classes = [
+            (Path("src/models.py"), 0, "User", ["login", "logout"], {}, []),
+            (Path("src/base.py"), 1, "BaseModel", ["save", "delete"], {}, []),
+            (Path("src/admin.py"), 2, "AdminUser", ["ban_user"], {}, ["User"]),
+        ]
+
+        objects = Objects(functions=functions, classes=classes)
+        # Note: classes are sorted by path, methods are processed in order
+        expected = [
+            "src/admin.py:002:AdminUser",
+            "src/base.py:001:BaseModel",
+            "src/models.py:000:User",
+        ]
+
+        result = objects.classes_only
+        assert result == expected
+
     def test_methodless(self):
         # classes without methods
         functions = []

@@ -19,6 +19,8 @@ from archlint.configuration import (
     UnitTestsConfig,
 )
 
+ClassTuple = tuple[Path, int, str, list[str], dict[str, str], list[str]]
+
 icfg_base = ImportsConfig()
 cfg_base = Configuration(
     root_dir=Path("."),
@@ -127,7 +129,7 @@ functions_mixed_docs = [
     (Path("docs/markdown/submodule.md"), 8, "func_unexpected"),
     (Path("docs/markdown/submodule.md"), 9, "function3"),
 ]
-classes_baseline = [
+classes_baseline: list[ClassTuple] = [
     (
         Path("src/module/submodule.py"),
         1,
@@ -153,7 +155,7 @@ classes_baseline = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_baseline_docs = [
+classes_baseline_docs: list[ClassTuple] = [
     (
         Path("docs/markdown/submodule.md"),
         1,
@@ -171,7 +173,7 @@ classes_baseline_docs = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_baseline_tests = [
+classes_baseline_tests: list[ClassTuple] = [
     (
         Path("tests/unit_tests/submodule_test.py"),
         1,
@@ -197,7 +199,7 @@ classes_baseline_tests = [
         [],
     ),
 ]
-classes_missing_docs = [
+classes_missing_docs: list[ClassTuple] = [
     (
         Path("docs/markdown/submodule.md"),
         1,
@@ -215,7 +217,7 @@ classes_missing_docs = [
         ["inherited_a", "inherited_b.md"],
     ),
 ]
-classes_missing_tests = [
+classes_missing_tests: list[ClassTuple] = [
     (
         Path("tests/unit_tests/submodule_test.py"),
         1,
@@ -240,7 +242,7 @@ classes_missing_tests = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_unexpected_docs = [
+classes_unexpected_docs: list[ClassTuple] = [
     (
         Path("docs/markdown/submodule.md"),
         1,
@@ -279,7 +281,7 @@ classes_unexpected_docs = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_unexpected_tests = [
+classes_unexpected_tests: list[ClassTuple] = [
     (
         Path("tests/unit_tests/submodule_test.py"),
         1,
@@ -306,7 +308,7 @@ classes_unexpected_tests = [
         [],
     ),
 ]
-classes_mixed_docs = [
+classes_mixed_docs: list[ClassTuple] = [
     (
         Path("docs/markdown/submodule.md"),
         1,
@@ -332,7 +334,7 @@ classes_mixed_docs = [
         ["inherited_a", "inherited_b"],
     ),
 ]
-classes_mixed_tests = [
+classes_mixed_tests: list[ClassTuple] = [
     (
         Path("tests/unit_tests/submodule_test.py"),
         1,
@@ -359,7 +361,7 @@ classes_mixed_tests = [
     ),
 ]
 strlist: list[str] = []
-classes_out_of_order = [
+classes_out_of_order: list[ClassTuple] = [
     (
         Path("src/model.py"),
         0,
@@ -498,7 +500,7 @@ def test_check_docs_structure(
 ):
     result, result_problems = check_docs_structure(cfg, source_objects, docs_objects)
 
-    def contains(expr: re.Pattern) -> bool:
+    def contains(expr: re.Pattern | str) -> bool:
         return bool(re.search(expr, result))
 
     for search_string in contained:
@@ -570,7 +572,7 @@ def test_check_tests_structure(
 ):
     result, result_problems = check_tests_structure(cfg, source_objects, tests_objects)
 
-    def contains(expr: re.Pattern) -> bool:
+    def contains(expr: re.Pattern | str) -> bool:
         return bool(re.search(expr, result))
 
     for search_string in contained:

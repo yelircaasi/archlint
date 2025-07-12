@@ -49,11 +49,11 @@ class Objects:
     @property
     def strings(self) -> list[str]:
         return self.method_strings + self.function_strings
-    
+
     @property
     def strings_without_methods(self) -> list[str]:
         return self.classes_only + self.function_strings
-    
+
     @property
     def classes_only(self) -> list[str]:
         return list(set([f"{p}:{i:0>3}:{cl}" for p, i, cl, _, __, ___ in self.classes]))

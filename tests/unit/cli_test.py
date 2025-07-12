@@ -1,10 +1,7 @@
-import re
-
 from click.testing import CliRunner
 
 from archlint.cli import (
     archlint_cli,
-    main,
 )
 
 

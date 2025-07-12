@@ -6,7 +6,7 @@ Configurable development CLI that checks various aspects of architecture: method
 
 1. ~~configuration tests (thorough)~~
 1. remaining tests
-    - checks_test.py (4/16)
+    - ~~checks_test.py~~
     - ~~cli_test.py~~
     - ~~collection_test.py~~
     - ~~configuration_test.py~~

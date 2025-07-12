@@ -6,10 +6,11 @@ Goal is to perform strict validation and helpful error messages.
 
 import re
 import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Iterable, Self, TypeVar
+from typing import Self, TypeVar
 
 from .regexes import Regex
 from .utils import (
